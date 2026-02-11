@@ -1,0 +1,24 @@
+===================================
+BACKUP / RESTORE & MIGRATIONS
+===================================
+
+Migrations
+----------
+- Run makemigrations/migrate on a copy; verify forward and backward apply; check data transforms where scripts run.
+
+Backups
+-------
+- Validate backup process (schedule, retention); perform test restores to a staging DB; confirm the app boots on restored data.
+
+Checks
+------
+- Schema matches models; no data loss on migrations; indexes/constraints present; audit logs remain intact.
+
+Tooling
+-------
+- Django migrate on snapshot DB; dumpdata/loaddata for smoke; DB-native backup tools for full coverage.
+
+Automation
+----------
+- Pre-release migration dry-runs; periodic restore drills with success criteria.
+

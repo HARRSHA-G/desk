@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Official Poster</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #09090b;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .poster-container {
+            position: relative;
+            width: 800px;
+            height: 1100px;
+            background: linear-gradient(145deg, #18181b 0%, #09090b 100%);
+            border: 1px solid #27272a;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 4rem;
+            box-sizing: border-box;
+        }
+
+        /* Abstract Background Elements */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #0ea5e9;
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: #8b5cf6;
+            bottom: -150px;
+            right: -150px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 5rem;
+            line-height: 0.9;
+            margin: 0;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+        }
+
+        header h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #38bdf8;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-top: 1rem;
+        }
+
+        .features {
+            display: grid;
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-item {
+            border-left: 2px solid #3f3f46;
+            padding-left: 1.5rem;
+        }
+
+        .feature-item h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.8rem;
+            color: #e2e8f0;
+        }
+
+        .feature-item p {
+            margin: 0;
+            color: #a1a1aa;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .highlight-box p {
+            font-size: 1.25rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            border-top: 1px solid #27272a;
+            padding-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            color: #52525b;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid #3f3f46;
+            color: #d4d4d8;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="poster-container">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+
+        <section class="content">
+            <header>
+                <h2>Next Gen</h2>
+                <h1>Total<br>Project<br>Control</h1>
+            </header>
+
+            <div class="features">
+                <div class="feature-item">
+                    <h3>360° Vision</h3>
+                    <p>From the first brick to the final invoice, track every detail in real-time with granular
+                        precision.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Financial Armor</h3>
+                    <p>Eliminate blind spots. Automated ledgers, expense tracking, and instant cash-flow visualizations.
+                    </p>
+                </div>
+                <div class="feature-item">
+                    <h3>Connected Field</h3>
+                    <p>Bridge the gap between site supervisors and HQs with live attendance and inventory updates.</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <p>The definitive OS for Construction Management.</p>
+            </div>
+
+            <div class="footer">
+                <div>
+                    <span class="badge">React 19</span>
+                    <span class="badge">Django 4.2</span>
+                </div>
+                <div>CMS Official Project</div>
+            </div>
+        </section>
+    </div>
+
+</body>
+
+</html>

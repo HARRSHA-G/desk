@@ -1,0 +1,32 @@
+==============================
+UI SMOKE / REGRESSION
+==============================
+
+Scope
+-----
+- Critical user paths (login/logout, FailureMode CRUD, Category management, Fishbone creation/edit, navigation links).
+
+Tooling
+-------
+- Playwright or Cypress for E2E; pytest-selenium as an alternative; run headless in CI.
+
+Checks
+------
+- Page loads without console errors; forms submit with valid data; validation messages on bad input; lists/tables refresh after actions.
+
+Responsiveness
+--------------
+- Validate layout at key breakpoints (mobile/tablet/desktop), dark/light themes, and high-DPI screens.
+
+Navigation
+----------
+- Direct URL/deep-link loads work, back/forward keeps state, and guarded routes redirect correctly.
+
+Loading states
+--------------
+- Skeletons/spinners show during fetches and clear when data appears; no stuck loaders.
+
+Online/offline
+--------------
+- Simulate offline in devtools; ensure messaging plus retry/recover flows.
+

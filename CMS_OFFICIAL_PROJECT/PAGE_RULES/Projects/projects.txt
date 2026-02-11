@@ -1,0 +1,7 @@
+Projects Page Rules
+
+1. Normalize every layout via `normalizeLayoutKey` and treat `multi_flat`/`multi_plot` as CRM/Sales-managed throughout the page logic.
+2. Customer/supervisor selectors are hidden for CRM-managed layouts; cards show the “Customer & supervisor managed via CRM” note and do not display their paid/due totals.
+3. The backend bridge returns null for `project_total_paid`/`project_remaining_amount` on CRM-managed entries and adds `project_payment_note` to help downstream consumers understand why billing detail is absent.
+4. Project creation/edit modals clear assignments when switching to multi-unit layouts and only send supervisor/customer IDs whenever the layout resolves to single-unit.
+5. Maintain a single source of truth: rely on CRM/sales APIs for multi-unit data and avoid hardcoding customer/supervisor details anywhere else in the folder.

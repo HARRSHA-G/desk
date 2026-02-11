@@ -1,0 +1,5 @@
+Payments Page Rules
+
+1. `Payments.jsx` draws from `/finance/payments`, so rely on the backend’s verified status and date ordering rather than sorting locally.
+2. Render the owner project names using the `project_payment_project` references, and do not duplicate payment amounts in local state.
+3. Any filtering or search should re-query the endpoint, leaving the ultimate data in the backend.

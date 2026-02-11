@@ -1,0 +1,24 @@
+================
+SPIKE TESTING
+================
+
+What to test
+------------
+- Sudden surges (login storms, bulk imports/exports) and rapid drop-offs; confirm graceful handling and fast recovery.
+
+Recommended tools
+-----------------
+- k6 spike profile; browser throttling for UI.
+- Monitor autoscale signals if available.
+
+Automation approach
+-------------------
+- Pre-release spike drill; assert no data loss and clear user-facing messaging during overload.
+
+Critical edge cases
+-------------------
+- DB connection storms and cache cold starts.
+- CDN misses and offline-to-online floods.
+- Heavy image/card grids on high-DPI devices.
+- Theme asset caching.
+

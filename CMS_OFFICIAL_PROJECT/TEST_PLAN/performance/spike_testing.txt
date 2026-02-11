@@ -1,0 +1,24 @@
+============================
+SPIKE TESTING (SURGES)
+============================
+
+Goal
+----
+- Validate behavior under sudden bursts of traffic (e.g., mass login, bulk submissions).
+
+Tooling
+-------
+- k6/locust/JMeter with sharp ramp-up profiles.
+
+Metrics
+-------
+- Latency/error spikes, queue growth, autoscaling response (if any), and recovery to baseline.
+
+Expectations
+------------
+- No crashes; informative errors if throttled; fast recovery after spike ends.
+
+Cadence
+-------
+- Include before marketing pushes or large user onboardings.
+

@@ -1,0 +1,24 @@
+=======================================
+STRESS TESTING (BREAKING POINTS)
+=======================================
+
+Goal
+----
+- Find breaking points beyond expected load and observe failure modes and recovery.
+
+Tooling
+-------
+- k6/JMeter/locust with stepwise or ramp-to-failure profiles.
+
+Metrics
+-------
+- Saturation point, error rates, queue depths, DB connection pool exhaustion, and recovery time after load drops.
+
+Observations
+------------
+- Degradation should be graceful (useful errors, no data loss); services should recover without manual intervention.
+
+Cadence
+-------
+- Run before major releases or infra changes; document tipping points and mitigation steps.
+

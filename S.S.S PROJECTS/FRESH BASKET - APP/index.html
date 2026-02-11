@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fresh Basket - Home</title>
+    <meta name="description" content="Explore our wide range of grocery categories. From fresh produce to pantry essentials, find everything you need.">
+    <meta name="keywords" content="grocery categories, fresh produce, dairy, bakery, meat, seafood, pantry, organic food">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#A8E6CF',
+                        secondary: '#F8EFEA'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F8EFEA;
+            color: #0A1D37;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.dark-mode {
+            background-color: #0A1D37;
+            color: #F8EFEA;
+        }
+        .dark-mode .card {
+            background-color: #0A1D37;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .dark-mode .navbar {
+            background-color: rgba(10, 29, 55, 0.9);
+            color: #F8EFEA;
+        }
+        .dark-mode .footer {
+            background-color: #0A1D37;
+        }
+        .dark-mode .search-container input {
+            background-color: rgba(248, 239, 234, 0.1);
+            color: #F8EFEA;
+        }
+        .dark-mode .cart-sidebar {
+            background-color: #0A1D37;
+            color: #F8EFEA;
+        }
+        .navbar {
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+        .cart-sidebar {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        .cart-sidebar.open {
+            transform: translateX(0);
+        }
+        .overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .theme-toggle {
+            width: 50px;
+            height: 24px;
+            position: relative;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .theme-toggle-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+        .dark-mode .theme-toggle-circle {
+            transform: translateX(26px);
+        }
+        .product-slider {
+            scroll-behavior: smooth;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .product-slider::-webkit-scrollbar {
+            display: none;
+        }
+        .dot {
+            transition: background-color 0.3s ease;
+        }
+        .dot.active {
+            background-color: #A8E6CF;
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #A8E6CF;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .toast {
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background-color: white;
+            z-index: 40;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        .mobile-menu-header {
+            padding: 1rem;
+            border-bottom: 1px solid #F8EFEA;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mobile-menu-content {
+            padding: 1rem;
+            overflow-y: auto;
+            height: calc(100vh - 60px);
+        }
+        .mobile-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #0A1D37;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .mobile-menu-item:hover {
+            background-color: #F8EFEA;
+            color: #A8E6CF;
+        }
+        .mobile-menu-item i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 30;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar fixed top-0 left-0 right-0 z-50 bg-white/80 shadow-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <a href="./index.html" class="text-2xl font-pacifico text-primary">Fresh Basket</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="./index.html" class="nav-link active">Home</a>
+                    <a href="./categories.html" class="nav-link">Categories</a>
+                    <a href="./products.html" class="nav-link">Products</a>
+                    <a href="./about.html" class="nav-link">About Us</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="search-container relative hidden md:block">
+                        <input type="text" placeholder="Search products..." class="w-48 lg:w-64 px-4 py-2 rounded-full text-sm bg-white/10 border-none">
+                        <div class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+                            <i class="ri-search-line"></i>
+                        </div>
+                    </div>
+                    <button id="cartButton" class="relative w-10 h-10 flex items-center justify-center">
+                        <i class="ri-shopping-cart-line text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </button>
+                    <button class="md:hidden w-10 h-10 flex items-center justify-center" id="menuToggle">
+                        <i class="ri-menu-line text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <a href="./index.html" class="text-xl font-pacifico text-primary">Fresh Basket</a>
+            <button id="closeMenu" class="w-10 h-10 flex items-center justify-center">
+                <i class="ri-close-line text-2xl"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-content">
+            <a href="./index.html" class="mobile-menu-item">
+                <i class="ri-home-line"></i>
+                <span>Home</span>
+            </a>
+            <a href="./categories.html" class="mobile-menu-item">
+                <i class="ri-apps-line"></i>
+                <span>Categories</span>
+            </a>
+            <a href="./products.html" class="mobile-menu-item">
+                <i class="ri-shopping-bag-line"></i>
+                <span>Products</span>
+            </a>
+            <a href="./about.html" class="mobile-menu-item">
+                <i class="ri-information-line"></i>
+                <span>About Us</span>
+            </a>
+            <div class="p-4 mt-4">
+                <div class="search-container relative">
+                    <input type="text" placeholder="Search products..." class="w-full px-4 py-2 rounded-full text-sm bg-gray-50 border border-gray-200">
+                    <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <i class="ri-search-line"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 mt-4 border-t border-gray-100">
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+                        <i class="ri-facebook-fill"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+                        <i class="ri-twitter-x-fill"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Cart Sidebar -->
+    <div class="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-xl z-50 cart-sidebar p-6 overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-semibold">Your Cart (3)</h2>
+            <button id="closeCart" class="w-8 h-8 flex items-center justify-center">
+                <i class="ri-close-line text-xl"></i>
+            </button>
+        </div>
+        <div class="space-y-4 mb-8">
+            <!-- Cart Item 1 -->
+            <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded">
+                <img src="https://readdy.ai/api/search-image?query=organic%20fresh%20apples%20on%20white%20background%2C%20studio%20lighting%2C%20high%20quality%20product%20photography&width=80&height=80&seq=1&orientation=squarish" alt="Organic Apples" class="w-16 h-16 object-cover rounded">
+                <div class="flex-1">
+                    <h3 class="font-medium">Organic Apples</h3>
+                    <p class="text-sm text-gray-600">$4.99/kg</p>
+                    <div class="flex items-center mt-1">
+                        <button class="w-6 h-6 flex items-center justify-center bg-gray-100 rounded">-</button>
+                        <span class="mx-2 text-sm">2</span>
+                        <button class="w-6 h-6 flex items-center justify-center bg-gray-100 rounded">+</button>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="font-medium">$9.98</p>
+                    <button class="text-xs text-gray-500 mt-2">Remove</button>
+                </div>
+            </div>
+            <!-- Cart Item 2 -->
+            <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded">
+                <img src="https://readdy.ai/api/search-image?query=organic%20avocados%20on%20white%20background%2C%20studio%20lighting%2C%20high%20quality%20product%20photography&width=80&height=80&seq=2&orientation=squarish" alt="Avocados" class="w-16 h-16 object-cover rounded">
+                <div class="flex-1">
+                    <h3 class="font-medium">Avocados</h3>
+                    <p class="text-sm text-gray-600">$2.49 each</p>
+                    <div class="flex items-center mt-1">
+                        <button class="w-6 h-6 flex items-center justify-center bg-gray-100 rounded">-</button>
+                        <span class="mx-2 text-sm">4</span>
+                        <button class="w-6 h-6 flex items-center justify-center bg-gray-100 rounded">+</button>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="font-medium">$9.96</p>
+                    <button class="text-xs text-gray-500 mt-2">Remove</button>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-200 pt-4 mb-6">
+            <div class="flex justify-between mb-2">
+                <span>Subtotal</span>
+                <span>$19.94</span>
+            </div>
+            <div class="flex justify-between mb-2">
+                <span>Shipping</span>
+                <span>$4.99</span>
+            </div>
+            <div class="flex justify-between font-semibold text-lg mt-4">
+                <span>Total</span>
+                <span>$24.93</span>
+            </div>
+        </div>
+        <div class="space-y-4">
+            <button class="w-full py-3 bg-primary text-white font-medium rounded">Proceed to Checkout</button>
+            <button id="continueShopping" class="w-full py-3 bg-transparent border border-gray-200 font-medium rounded">Continue Shopping</button>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black/50 z-40 overlay" id="overlay"></div>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section id="home" class="relative min-h-[600px] flex items-center" style="background-image: url('https://readdy.ai/api/search-image?query=premium%20grocery%20store%20with%20fresh%20produce%2C%20modern%20shopping%20environment%2C%20elegant%20display%20of%20fruits%2C%20vegetables%2C%20and%20gourmet%20products%2C%20clean%20and%20spacious%20aisles%2C%20high-end%20supermarket%20atmosphere&width=1920&height=800&seq=4&orientation=landscape'); background-size: cover; background-position: center;">
+            <div class="absolute inset-0 bg-gradient-to-r from-white/90 to-white/60"></div>
+            <div class="container mx-auto px-6 md:px-12 relative z-10">
+                <div class="max-w-xl" data-aos="fade-up" data-aos-duration="1000">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4" id="heroText">Fresh Quality Products</h1>
+                    <p class="text-lg md:text-xl mb-8 text-gray-600">Discover premium groceries with fast delivery right to your doorstep.</p>
+                    <div class="relative mb-6">
+                        <input type="text" placeholder="What are you looking for today?" class="w-full px-5 py-4 rounded-full text-sm bg-white/80 backdrop-blur-md border border-gray-200">
+                        <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary text-white px-5 py-2 rounded-full font-medium">Search</button>
+                    </div>
+                    <button class="bg-primary text-white px-8 py-3 rounded-full font-medium">Shop Now</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section id="categories" class="py-8 px-6 md:px-12">
+            <div class="container mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold">Shop by Category</h2>
+                    <a href="#" class="text-primary hover:underline">View All</a>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <!-- Category 1 -->
+                    <a href="#" class="group">
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 text-center transition-transform hover:-translate-y-1">
+                            <div class="w-16 h-16 mx-auto mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i class="ri-leaf-line text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="font-medium text-sm group-hover:text-primary">Fresh Produce</h3>
+                        </div>
+                    </a>
+                    <!-- Category 2 -->
+                    <a href="#" class="group">
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 text-center transition-transform hover:-translate-y-1">
+                            <div class="w-16 h-16 mx-auto mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i class="ri-cup-line text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="font-medium text-sm group-hover:text-primary">Dairy & Eggs</h3>
+                        </div>
+                    </a>
+                    <!-- Category 3 -->
+                    <a href="#" class="group">
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 text-center transition-transform hover:-translate-y-1">
+                            <div class="w-16 h-16 mx-auto mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i class="ri-bread-line text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="font-medium text-sm group-hover:text-primary">Bakery</h3>
+                        </div>
+                    </a>
+                    <!-- Category 4 -->
+                    <a href="#" class="group">
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 text-center transition-transform hover:-translate-y-1">
+                            <div class="w-16 h-16 mx-auto mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i class="ri-fish-line text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="font-medium text-sm group-hover:text-primary">Meat & Seafood</h3>
+                        </div>
+                    </a>
+                    <!-- Category 5 -->
+                    <a href="#" class="group">
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 text-center transition-transform hover:-translate-y-1">
+                            <div class="w-16 h-16 mx-auto mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i class="ri-store-2-line text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="font-medium text-sm group-hover:text-primary">Pantry</h3>
+                        </div>
+                    </a>
+                    <!-- Category 6 -->
+                    <a href="#" class="group">
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 text-center transition-transform hover:-translate-y-1">
+                            <div class="w-16 h-16 mx-auto mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                                <i class="ri-drinks-line text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="font-medium text-sm group-hover:text-primary">Beverages</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Products Section -->
+        <section id="products" class="py-8 px-6 md:px-12 bg-gray-50">
+            <div class="container mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-8">
+                        <h2 class="text-2xl font-bold">Featured Products</h2>
+                        <div class="hidden md:flex space-x-4">
+                            <button class="px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors">All Products</button>
+                            <button class="px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors">Best Sellers</button>
+                            <button class="px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors">New Arrivals</button>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button id="prevBtn" class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full">
+                            <i class="ri-arrow-left-s-line"></i>
+                        </button>
+                        <button id="nextBtn" class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-full">
+                            <i class="ri-arrow-right-s-line"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="overflow-x-auto product-slider" id="productSlider">
+                        <div class="flex space-x-6" style="min-width: max-content;">
+                            <!-- Product 1 -->
+                            <div class="card bg-white border border-gray-200 rounded-lg overflow-hidden w-72 group hover:border-primary transition-colors" data-aos="fade-up">
+                                <div class="relative h-48">
+                                    <img src="https://readdy.ai/api/search-image?query=organic%20strawberries%20on%20white%20background%2C%20studio%20lighting%2C%20high%20quality%20product%20photography&width=300&height=200&seq=7&orientation=landscape" alt="Organic Strawberries" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform">
+                                    <div class="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">20% OFF</div>
+                                    <button class="absolute bottom-3 right-3 w-10 h-10 bg-primary text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <i class="ri-heart-line"></i>
+                                    </button>
+                                </div>
+                                <div class="p-5">
+                                    <div class="flex items-center text-yellow-400 text-sm mb-2">
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-half-fill"></i>
+                                        <span class="text-gray-600 ml-2">(42)</span>
+                                    </div>
+                                    <h3 class="font-medium mb-1">Organic Strawberries</h3>
+                                    <p class="text-sm text-gray-600 mb-3">250g package</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-semibold">$4.99</span>
+                                        <button class="bg-primary text-white px-3 py-2 rounded-full text-sm font-medium">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Product 2 -->
+                            <div class="card bg-white border border-gray-200 rounded-lg overflow-hidden w-72" data-aos="fade-up" data-aos-delay="100">
+                                <div class="relative h-48">
+                                    <img src="https://readdy.ai/api/search-image?query=organic%20avocados%20on%20white%20background%2C%20studio%20lighting%2C%20high%20quality%20product%20photography&width=300&height=200&seq=8&orientation=landscape" alt="Avocados" class="w-full h-full object-cover object-top">
+                                    <div class="absolute top-3 left-3 bg-primary text-white text-xs font-medium px-2 py-1 rounded">Organic</div>
+                                </div>
+                                <div class="p-5">
+                                    <div class="flex items-center text-yellow-400 text-sm mb-2">
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-fill"></i>
+                                        <i class="ri-star-line"></i>
+                                        <span class="text-gray-600 ml-2">(56)</span>
+                                    </div>
+                                    <h3 class="font-medium mb-1">Organic Avocados</h3>
+                                    <p class="text-sm text-gray-600 mb-3">Pack of 4, ready to eat</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-semibold">$6.99</span>
+                                        <button class="bg-primary text-white px-3 py-2 rounded-full text-sm font-medium">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center mt-8 space-x-2">
+                    <span class="dot w-2 h-2 rounded-full bg-gray-300 active"></span>
+                    <span class="dot w-2 h-2 rounded-full bg-gray-200"></span>
+                    <span class="dot w-2 h-2 rounded-full bg-gray-200"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Promotions Section -->
+        <section class="py-16 px-6 md:px-12">
+            <div class="container mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Promo 1 -->
+                    <div class="relative rounded-lg overflow-hidden h-64" data-aos="fade-right">
+                        <img src="https://readdy.ai/api/search-image?query=fresh%20organic%20produce%20display%2C%20elegant%20grocery%20store%20setting%2C%20premium%20quality%20food%20products&width=600&height=300&seq=12&orientation=landscape" alt="Fresh Produce" class="w-full h-full object-cover object-top">
+                        <div class="absolute inset-0 bg-gradient-to-r from-white/80 to-transparent flex items-center">
+                            <div class="p-8">
+                                <h3 class="text-2xl font-bold mb-2">Fresh Arrivals</h3>
+                                <p class="text-gray-600 mb-4">Discover our newest organic produce</p>
+                                <button class="bg-primary text-white px-5 py-2 rounded-full text-sm font-medium">Shop Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Promo 2 -->
+                    <div class="relative rounded-lg overflow-hidden h-64" data-aos="fade-left">
+                        <img src="https://readdy.ai/api/search-image?query=premium%20grocery%20display%20with%20fresh%20organic%20fruits%20and%20vegetables%2C%20artisan%20breads%2C%20and%20gourmet%20foods&width=600&height=300&seq=13&orientation=landscape" alt="Groceries" class="w-full h-full object-cover object-top">
+                        <div class="absolute inset-0 bg-gradient-to-r from-white/80 to-transparent flex items-center">
+                            <div class="p-8">
+                                <h3 class="text-2xl font-bold mb-2">Special Offers</h3>
+                                <p class="text-gray-600 mb-4">Save up to 30% on selected items</p>
+                                <button class="bg-primary text-white px-5 py-2 rounded-full text-sm font-medium">Shop Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 px-6 md:px-12 bg-gray-50">
+            <div class="container mx-auto">
+                <div class="max-w-3xl mx-auto text-center mb-12" data-aos="fade-up">
+                    <h2 class="text-3xl font-bold mb-4">About Fresh Basket</h2>
+                    <p class="text-gray-600 text-lg">We're on a mission to bring you the freshest, highest quality products with the convenience of online shopping and fast delivery.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                    <!-- Stat 1 -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 text-center" data-aos="fade-up" data-aos-delay="100">
+                        <div class="text-4xl font-bold text-primary mb-2" id="customerCount">0</div>
+                        <p class="text-gray-600">Happy Customers</p>
+                    </div>
+                    <!-- Stat 2 -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 text-center" data-aos="fade-up" data-aos-delay="200">
+                        <div class="text-4xl font-bold text-primary mb-2" id="productCount">0</div>
+                        <p class="text-gray-600">Products Available</p>
+                    </div>
+                    <!-- Stat 3 -->
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="text-4xl font-bold text-primary mb-2" id="cityCount">0</div>
+                        <p class="text-gray-600">Cities Served</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Section -->
+        <section class="py-16 px-6 md:px-12 bg-gray-50">
+            <div class="container mx-auto max-w-4xl text-center" data-aos="fade-up">
+                <h2 class="text-3xl font-bold mb-4">Stay Updated</h2>
+                <p class="text-gray-600 mb-8">Subscribe to our newsletter for exclusive deals, new arrivals, and more.</p>
+                <div class="flex flex-col md:flex-row gap-4 max-w-xl mx-auto">
+                    <input type="email" placeholder="Your email address" class="flex-1 px-5 py-3 rounded-full text-sm bg-white border border-gray-200">
+                    <button class="bg-primary text-white px-6 py-3 rounded-full font-medium">Subscribe</button>
+                </div>
+                <p class="text-xs text-gray-500 mt-4">By subscribing, you agree to our Privacy Policy and consent to receive updates from Fresh Basket.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Column 1 -->
+                <div class="text-center sm:text-left">
+                    <a href="./index.html" class="text-2xl font-pacifico text-primary mb-6 block">Fresh Basket</a>
+                    <p class="text-gray-600 mb-6">Your one-stop shop for fresh groceries and quality products, delivered right to your doorstep.</p>
+                    <div class="flex justify-center sm:justify-start space-x-4">
+                        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                            <i class="ri-facebook-fill"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                            <i class="ri-twitter-x-fill"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                            <i class="ri-instagram-fill"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                            <i class="ri-pinterest-fill"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Column 2 -->
+                <div class="text-center sm:text-left">
+                    <h4 class="font-semibold text-lg mb-6">Shop</h4>
+                    <ul class="space-y-3">
+                        <li><a href="./categories.html" class="text-gray-600 hover:text-primary transition-colors">Categories</a></li>
+                        <li><a href="./products.html" class="text-gray-600 hover:text-primary transition-colors">All Products</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Best Sellers</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Special Offers</a></li>
+                    </ul>
+                </div>
+                <!-- Column 3 -->
+                <div class="text-center sm:text-left">
+                    <h4 class="font-semibold text-lg mb-6">Company</h4>
+                    <ul class="space-y-3">
+                        <li><a href="./about.html" class="text-gray-600 hover:text-primary transition-colors">About Us</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Press</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                <!-- Column 4 -->
+                <div class="text-center sm:text-left">
+                    <h4 class="font-semibold text-lg mb-6">Help</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">FAQs</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Shipping</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Returns</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Track Order</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Bottom Footer -->
+            <div class="mt-12 pt-8 border-t border-gray-200">
+                <div class="flex justify-center">
+                    <div class="text-center">
+                        <p class="text-gray-600 text-sm">© 2024 Fresh Basket. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="fixed bottom-6 right-6 bg-primary text-white px-4 py-3 rounded-lg shadow-lg z-50 toast" id="toast">
+        <div class="flex items-center">
+            <i class="ri-check-line mr-2"></i>
+            <span id="toastMessage">Item added to cart!</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize AOS
+            AOS.init({
+                duration: 800,
+                once: true
+            });
+
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const closeMenu = document.getElementById('closeMenu');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuOverlay = document.getElementById('menuOverlay');
+
+            function openMobileMenu() {
+                mobileMenu.classList.add('open');
+                menuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('open');
+                menuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            menuToggle.addEventListener('click', openMobileMenu);
+            closeMenu.addEventListener('click', closeMobileMenu);
+            menuOverlay.addEventListener('click', closeMobileMenu);
+
+            // Cart sidebar toggle
+            const cartButton = document.getElementById('cartButton');
+            const closeCart = document.getElementById('closeCart');
+            const continueShopping = document.getElementById('continueShopping');
+            const cartSidebar = document.querySelector('.cart-sidebar');
+            const overlay = document.getElementById('overlay');
+
+            function openCart() {
+                cartSidebar.classList.add('open');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeCartSidebar() {
+                cartSidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            cartButton.addEventListener('click', openCart);
+            closeCart.addEventListener('click', closeCartSidebar);
+            continueShopping.addEventListener('click', closeCartSidebar);
+            overlay.addEventListener('click', closeCartSidebar);
+
+            // Product slider navigation
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const productSlider = document.getElementById('productSlider');
+            const dots = document.querySelectorAll('.dot');
+            let scrollAmount = 0;
+            const cardWidth = 300; // Card width + gap
+
+            prevBtn.addEventListener('click', function() {
+                scrollAmount = Math.max(scrollAmount - cardWidth, 0);
+                productSlider.scrollLeft = scrollAmount;
+                updateDots();
+            });
+
+            nextBtn.addEventListener('click', function() {
+                scrollAmount = Math.min(scrollAmount + cardWidth, productSlider.scrollWidth - productSlider.clientWidth);
+                productSlider.scrollLeft = scrollAmount;
+                updateDots();
+            });
+
+            function updateDots() {
+                const scrollPercentage = scrollAmount / (productSlider.scrollWidth - productSlider.clientWidth);
+                const activeDotIndex = Math.min(
+                    Math.floor(scrollPercentage * dots.length),
+                    dots.length - 1
+                );
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === activeDotIndex);
+                });
+            }
+
+            // Add to cart toast notification
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            document.querySelectorAll('button').forEach(button => {
+                if (button.textContent.includes('Add to Cart')) {
+                    button.addEventListener('click', function() {
+                        toastMessage.textContent = 'Item added to cart!';
+                        toast.classList.add('show');
+                        setTimeout(() => {
+                            toast.classList.remove('show');
+                        }, 3000);
+                    });
+                }
+            });
+
+            // Smooth scroll for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        // Close mobile menu if open
+                        mobileMenu.classList.add('translate-x-full');
+                    }
+                });
+            });
+
+            // Counter animation
+            const customerCount = document.getElementById('customerCount');
+            const productCount = document.getElementById('productCount');
+            const cityCount = document.getElementById('cityCount');
+
+            function animateCounter(element, target, duration) {
+                let start = 0;
+                const increment = Math.ceil(target / (duration / 16));
+                const timer = setInterval(() => {
+                    start += increment;
+                    if (start > target) {
+                        element.textContent = target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        element.textContent = start.toLocaleString();
+                    }
+                }, 16);
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(customerCount, 50000, 2000);
+                        animateCounter(productCount, 5000, 2000);
+                        animateCounter(cityCount, 120, 2000);
+                        observer.disconnect();
+                    }
+                });
+            });
+
+            observer.observe(customerCount);
+        });
+    </script>
+</body>
+</html> 

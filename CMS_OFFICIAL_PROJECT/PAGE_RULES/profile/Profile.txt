@@ -1,0 +1,5 @@
+Profile Page Rules
+
+1. `Profile.jsx` pulls account data from auth/profile APIs; refresh the data on load rather than reusing stale copies.
+2. Submit only necessary fields (name, email, phone, role) and follow backend validation; do not attempt local role overrides.
+3. Keep role-based UI tied to `profile_user_type` so supervisors/CRM roles see only their relevant actions.

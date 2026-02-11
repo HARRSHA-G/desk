@@ -1,0 +1,24 @@
+===================================
+CROSS-PLATFORM PARITY (FUTURE-PROOF)
+===================================
+
+Goal
+----
+- Keep UX/performance consistent if packaged as PWA/native/mobile/desktop.
+
+Checks
+------
+- Touch/keyboard parity, offline caching strategy, local storage limits, and theming consistency.
+
+Performance
+-----------
+- Measure startup/load on low-end mobile and mid-tier desktop; watch bundle size and critical path.
+
+Tooling
+-------
+- Lighthouse/PWA audits; device lab or emulators for mobile form factors.
+
+Automation
+----------
+- Reuse web E2E scripts against PWA builds where possible; track platform-specific issues separately.
+

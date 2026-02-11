@@ -1,0 +1,26 @@
+================
+LOAD TESTING
+================
+
+What to test
+------------
+- Steady expected traffic for key APIs/pages.
+- Measure p50/p95/p99 latency, throughput, and error rate while keeping resource usage within limits.
+
+Recommended tools
+-----------------
+- k6 or Locust; browser performance with Playwright traces for UI.
+- Capture server metrics (CPU, memory, DB latency).
+
+Automation approach
+-------------------
+- Run in staging with production-like data; gate releases with SLA thresholds; store trends over time.
+
+Critical edge cases
+-------------------
+- Auth-heavy endpoints.
+- List pagination with large datasets.
+- Media/static delivery.
+- Dark/light theme assets and high-DPI image loads.
+- Mobile networks.
+

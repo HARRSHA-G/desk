@@ -1,0 +1,24 @@
+==================================
+LOADING STATES & CONNECTIVITY
+==================================
+
+Loading
+-------
+- Show skeletons/spinners/progress while fetching; replace with content when ready; no stuck loaders.
+
+Progression
+-----------
+- Top-to-bottom fill or incremental sections for long loads; indicate background saves/exports if applicable.
+
+Offline/online
+--------------
+- Detect offline, show messaging, queue/retry actions, and auto-recover with clear status when back online.
+
+Tooling
+-------
+- Devtools offline simulation; Playwright network throttling; component/unit tests for loading flags.
+
+Automation
+----------
+- Include loading/offline scenarios in UI regression; assert ARIA/live-region updates for accessibility.
+

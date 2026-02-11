@@ -1,0 +1,27 @@
+=====================
+CAPACITY TESTING
+=====================
+
+What to test
+------------
+- Scaling limits for concurrent users, data volumes (projects, payments, expenses, attendance records), and storage growth.
+- Map when upgrades are needed.
+
+Recommended tools
+-----------------
+- k6/Locust with dataset scaling.
+- DB explain/indices review.
+- Browser performance on large lists.
+
+Automation approach
+-------------------
+- Quarterly capacity runs with snapshots of prod-like data sizes; track headroom per tier.
+
+Critical edge cases
+-------------------
+- Large paginated lists on mobile.
+- Export/download sizes.
+- Image-heavy pages in high-DPI.
+- Dark/light theme assets.
+- Offline cache size growth.
+

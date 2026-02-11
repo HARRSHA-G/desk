@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fresh Basket - About Us</title>
+<meta name="description" content="Learn about Fresh Basket's story, mission, values, team, and commitment to sustainable and organic products.">
+<meta name="keywords" content="fresh basket, about us, organic food, sustainable farming, grocery team, food mission">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#A8E6CF',secondary:'#F8EFEA'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #F8EFEA;
+  color: #0A1D37;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.navbar {
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+}
+.cart-sidebar {
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+.cart-sidebar.open {
+  transform: translateX(0);
+}
+.overlay {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.search-container input:focus {
+  outline: none;
+}
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #A8E6CF;
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after, .nav-link.active::after {
+  width: 100%;
+}
+.timeline-dot {
+  width: 16px;
+  height: 16px;
+  background-color: #A8E6CF;
+  border-radius: 50%;
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.timeline-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #ddd;
+}
+.team-card:hover .team-social {
+  opacity: 1;
+}
+.team-social {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.testimonial-card {
+  transition: all 0.3s ease;
+}
+.testimonial-card.active {
+  transform: scale(1.05);
+}
+.partner-card img {
+  transition: transform 0.3s ease;
+}
+.partner-card:hover img {
+  transform: scale(1.05);
+}
+.custom-checkbox {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.custom-checkbox:hover input ~ .checkmark {
+  background-color: #f5f5f5;
+}
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #A8E6CF;
+  border-color: #A8E6CF;
+}
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+.custom-checkbox .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  background-color: white;
+  z-index: 40;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.mobile-menu.open {
+  transform: translateX(0);
+}
+.mobile-menu-header {
+  padding: 1rem;
+  border-bottom: 1px solid #F8EFEA;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.mobile-menu-content {
+  padding: 1rem;
+  overflow-y: auto;
+  height: calc(100vh - 60px);
+}
+.mobile-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: #0A1D37;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.mobile-menu-item:hover {
+  background-color: #F8EFEA;
+  color: #A8E6CF;
+}
+.mobile-menu-item i {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+}
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 30;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+.menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+</style>
+</head>
+<body class="min-h-screen">
+<!-- Navigation Bar -->
+<nav class="navbar fixed top-0 left-0 right-0 z-50 bg-white/80 shadow-sm">
+  <div class="container mx-auto px-4 py-3">
+    <div class="flex items-center justify-between">
+      <a href="./index.html" class="text-2xl font-pacifico text-primary">Fresh Basket</a>
+      <div class="hidden md:flex space-x-8">
+        <a href="./index.html" class="nav-link">Home</a>
+        <a href="./categories.html" class="nav-link">Categories</a>
+        <a href="./products.html" class="nav-link">Products</a>
+        <a href="./about.html" class="nav-link">About Us</a>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div class="search-container relative hidden md:block">
+          <input type="text" placeholder="Search products..." class="w-48 lg:w-64 px-4 py-2 rounded-full text-sm bg-gray-100 border-none">
+          <div class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+            <i class="ri-search-line text-gray-500"></i>
+          </div>
+        </div>
+        <button id="cartButton" class="relative w-10 h-10 flex items-center justify-center">
+          <i class="ri-shopping-cart-line text-xl"></i>
+          <span class="absolute -top-1 -right-1 bg-primary text-[#0A1D37] text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">3</span>
+        </button>
+        <button class="md:hidden w-10 h-10 flex items-center justify-center" id="menuToggle">
+          <i class="ri-menu-line text-xl"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-header">
+    <a href="./index.html" class="text-xl font-pacifico text-primary">Fresh Basket</a>
+    <button id="closeMenu" class="w-10 h-10 flex items-center justify-center">
+      <i class="ri-close-line text-2xl"></i>
+    </button>
+  </div>
+  <div class="mobile-menu-content">
+    <a href="./index.html" class="mobile-menu-item">
+      <i class="ri-home-line"></i>
+      <span>Home</span>
+    </a>
+    <a href="./categories.html" class="mobile-menu-item">
+      <i class="ri-apps-line"></i>
+      <span>Categories</span>
+    </a>
+    <a href="./products.html" class="mobile-menu-item">
+      <i class="ri-shopping-bag-line"></i>
+      <span>Products</span>
+    </a>
+    <a href="./about.html" class="mobile-menu-item">
+      <i class="ri-information-line"></i>
+      <span>About Us</span>
+    </a>
+    <div class="p-4 mt-4">
+      <div class="search-container relative">
+        <input type="text" placeholder="Search products..." class="w-full px-4 py-2 rounded-full text-sm bg-gray-50 border border-gray-200">
+        <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+          <i class="ri-search-line"></i>
+        </div>
+      </div>
+    </div>
+    <div class="p-4 mt-4 border-t border-gray-100">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-sm font-medium">Dark Mode</span>
+        <div class="theme-toggle bg-gray-100 border border-gray-200" id="mobileThemeToggle">
+          <div class="theme-toggle-circle bg-primary"></div>
+        </div>
+      </div>
+      <div class="flex items-center space-x-4">
+        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+          <i class="ri-facebook-fill"></i>
+        </a>
+        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+          <i class="ri-twitter-x-fill"></i>
+        </a>
+        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+          <i class="ri-instagram-fill"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<!-- Cart Sidebar -->
+<div class="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-xl z-50 cart-sidebar p-6 overflow-y-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-semibold">Your Cart (3)</h2>
+    <button id="closeCart" class="w-8 h-8 flex items-center justify-center">
+      <i class="ri-close-line text-xl"></i>
+    </button>
+  </div>
+  <div class="space-y-4 mb-8">
+    <!-- Cart Item 1 -->
+    <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded">
+      <img src="https://readdy.ai/api/search-image?query=organic%25252520fresh%25252520apples%25252520on%25252520white%25252520background%2525252C%25252520studio%25252520lighting%2525252C%25252520high%25252520quality%25252520product%25252520photography&width=80&height=80&seq=1&orientation=squarish" alt="Organic Apples" class="w-16 h-16 object-cover rounded">
+      <div class="flex-1">
+        <h3 class="font-medium">Organic Apples</h3>
+        <p class="text-sm text-gray-500">$4.99/kg</p>
+        <div class="flex items-center mt-1">
+          <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded !rounded-button">-</button>
+          <span class="mx-2 text-sm">2</span>
+          <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded !rounded-button">+</button>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="font-medium">$9.98</p>
+        <button class="text-xs text-gray-500 mt-2">Remove</button>
+      </div>
+    </div>
+    <!-- Cart Item 2 -->
+    <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded">
+      <img src="https://readdy.ai/api/search-image?query=organic%25252520milk%25252520carton%25252520on%25252520white%25252520background%2525252C%25252520studio%25252520lighting%2525252C%25252520high%25252520quality%25252520product%25252520photography&width=80&height=80&seq=2&orientation=squarish" alt="Organic Milk" class="w-16 h-16 object-cover rounded">
+      <div class="flex-1">
+        <h3 class="font-medium">Organic Milk</h3>
+        <p class="text-sm text-gray-500">$3.49</p>
+        <div class="flex items-center mt-1">
+          <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded !rounded-button">-</button>
+          <span class="mx-2 text-sm">1</span>
+          <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded !rounded-button">+</button>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="font-medium">$3.49</p>
+        <button class="text-xs text-gray-500 mt-2">Remove</button>
+      </div>
+    </div>
+    <!-- Cart Item 3 -->
+    <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded">
+      <img src="https://readdy.ai/api/search-image?query=organic%25252520avocados%25252520on%25252520white%25252520background%2525252C%25252520studio%25252520lighting%2525252C%25252520high%25252520quality%25252520product%25252520photography&width=80&height=80&seq=3&orientation=squarish" alt="Avocados" class="w-16 h-16 object-cover rounded">
+      <div class="flex-1">
+        <h3 class="font-medium">Avocados</h3>
+        <p class="text-sm text-gray-500">$2.49 each</p>
+        <div class="flex items-center mt-1">
+          <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded !rounded-button">-</button>
+          <span class="mx-2 text-sm">4</span>
+          <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded !rounded-button">+</button>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="font-medium">$9.96</p>
+        <button class="text-xs text-gray-500 mt-2">Remove</button>
+      </div>
+    </div>
+  </div>
+  <div class="border-t border-gray-200 pt-4 mb-6">
+    <div class="flex justify-between mb-2">
+      <span>Subtotal</span>
+      <span>$23.43</span>
+    </div>
+    <div class="flex justify-between mb-2">
+      <span>Shipping</span>
+      <span>$4.99</span>
+    </div>
+    <div class="flex justify-between font-semibold text-lg mt-4">
+      <span>Total</span>
+      <span>$28.42</span>
+    </div>
+  </div>
+  <div class="space-y-4">
+    <button class="w-full py-3 bg-primary text-[#0A1D37] font-medium rounded !rounded-button whitespace-nowrap">Proceed to Checkout</button>
+    <button id="continueShopping" class="w-full py-3 bg-transparent border border-gray-300 font-medium rounded !rounded-button whitespace-nowrap">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div class="fixed inset-0 bg-black/50 z-40 overlay" id="overlay"></div>
+
+<!-- Main Content -->
+<main class="pt-20">
+  <!-- Breadcrumb -->
+  <div class="bg-gray-100 py-3 px-6 md:px-12">
+    <div class="container mx-auto">
+      <div class="flex items-center text-sm">
+        <a href="./index.html" class="text-gray-600 hover:text-primary">Home</a>
+        <i class="ri-arrow-right-s-line mx-2 text-gray-400"></i>
+        <span class="text-primary font-medium">About Us</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="relative">
+    <div style="background-image: url('https://readdy.ai/api/search-image?query=modern%2520organic%2520grocery%2520store%2520interior%2520with%2520fresh%2520produce%2520displays%2C%2520wooden%2520shelving%2C%2520soft%2520natural%2520lighting%2C%2520plants%2C%2520and%2520eco-friendly%2520design%2520elements%2C%2520wide%2520angle%2520view%2C%2520no%2520people%2C%2520professional%2520photography&width=1920&height=600&seq=301&orientation=landscape');" class="bg-cover bg-center h-[500px] relative">
+      <div class="absolute inset-0 bg-black/40"></div>
+      <div class="container mx-auto px-6 md:px-12 relative z-10 h-full flex items-center">
+        <div class="max-w-2xl text-white">
+          <h1 class="text-4xl md:text-5xl font-bold mb-4">Our Story</h1>
+          <p class="text-xl mb-8">Bringing nature's best to your table since 2010</p>
+          <a href="./products.html" class="inline-block bg-primary text-[#0A1D37] px-6 py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-shadow !rounded-button whitespace-nowrap">Shop Our Products</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story Section -->
+  <section class="py-16 px-6 md:px-12 bg-white">
+    <div class="container mx-auto">
+      <div class="flex flex-col md:flex-row gap-12 items-center">
+        <div class="md:w-1/2">
+          <h2 class="text-3xl font-bold mb-6">The Fresh Basket Journey</h2>
+          <p class="text-gray-700 mb-6">Fresh Basket began in 2010 with a simple mission: to connect people with fresh, organic, and sustainably-sourced food. Founded by Elizabeth and Michael Chen, our journey started at a small farmers' market in Portland, where we built relationships with local farmers who shared our passion for quality and sustainability.</p>
+          <p class="text-gray-700 mb-6">What began as a weekend market stall has grown into a thriving business with multiple locations across the Pacific Northwest. Throughout our growth, we've remained true to our core values: supporting local farmers, promoting sustainable agriculture, and making healthy food accessible to all.</p>
+          <p class="text-gray-700">Today, Fresh Basket continues to innovate while honoring our roots. We've expanded our product range to include thousands of carefully selected items, but our commitment to quality, sustainability, and community remains unchanged.</p>
+        </div>
+        <div class="md:w-1/2">
+          <img src="https://readdy.ai/api/search-image?query=happy%2520diverse%2520team%2520of%2520grocery%2520store%2520founders%2520standing%2520in%2520front%2520of%2520their%2520organic%2520food%2520market%2C%2520smiling%2C%2520wearing%2520aprons%2520with%2520store%2520logo%2C%2520surrounded%2520by%2520fresh%2520produce%2C%2520warm%2520lighting%2C%2520professional%2520business%2520portrait&width=600&height=500&seq=302&orientation=landscape" alt="Fresh Basket Founders" class="rounded-lg shadow-lg w-full h-auto object-cover">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="py-16 px-6 md:px-12 bg-gray-50">
+    <div class="container mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12">Our Growth Timeline</h2>
+      <div class="max-w-3xl mx-auto relative">
+        <div class="timeline-line"></div>
+        
+        <!-- Timeline Item 1 -->
+        <div class="ml-10 mb-12 relative">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold text-xl mb-2">2010</h3>
+            <p class="text-gray-700">Fresh Basket founded by Elizabeth and Michael Chen as a weekend farmers' market stall in Portland.</p>
+          </div>
+        </div>
+        
+        <!-- Timeline Item 2 -->
+        <div class="ml-10 mb-12 relative">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold text-xl mb-2">2012</h3>
+            <p class="text-gray-700">Opened our first brick-and-mortar store in Portland's Pearl District, focusing on local and organic produce.</p>
+          </div>
+        </div>
+        
+        <!-- Timeline Item 3 -->
+        <div class="ml-10 mb-12 relative">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold text-xl mb-2">2015</h3>
+            <p class="text-gray-700">Expanded product range to include artisanal bakery, dairy, and sustainable meat options. Launched our community garden initiative.</p>
+          </div>
+        </div>
+        
+        <!-- Timeline Item 4 -->
+        <div class="ml-10 mb-12 relative">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold text-xl mb-2">2018</h3>
+            <p class="text-gray-700">Opened three additional locations across Oregon and Washington. Started our farm-to-school program supporting local education.</p>
+          </div>
+        </div>
+        
+        <!-- Timeline Item 5 -->
+        <div class="ml-10 mb-12 relative">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold text-xl mb-2">2020</h3>
+            <p class="text-gray-700">Launched our e-commerce platform and home delivery service, making fresh food accessible during challenging times.</p>
+          </div>
+        </div>
+        
+        <!-- Timeline Item 6 -->
+        <div class="ml-10 relative">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold text-xl mb-2">2025</h3>
+            <p class="text-gray-700">Today, Fresh Basket operates 12 stores across the Pacific Northwest with a thriving online presence, serving over 100,000 customers monthly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission & Values Section -->
+  <section class="py-16 px-6 md:px-12 bg-white">
+    <div class="container mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-4">Our Mission & Values</h2>
+      <p class="text-gray-700 text-center max-w-3xl mx-auto mb-12">At Fresh Basket, we're guided by a clear mission and strong values that shape everything we do.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Value 1 -->
+        <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+          <div class="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-6">
+            <i class="ri-plant-line text-primary text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-xl mb-3">Sustainability</h3>
+          <p class="text-gray-700">We're committed to environmentally responsible practices throughout our supply chain, from farm to table. We minimize waste, reduce packaging, and prioritize renewable resources.</p>
+        </div>
+        
+        <!-- Value 2 -->
+        <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+          <div class="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-6">
+            <i class="ri-community-line text-primary text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-xl mb-3">Community</h3>
+          <p class="text-gray-700">We believe in supporting local economies and building strong communities. We partner with local farmers, artisans, and organizations to create a positive impact where we live and work.</p>
+        </div>
+        
+        <!-- Value 3 -->
+        <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+          <div class="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-6">
+            <i class="ri-heart-line text-primary text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-xl mb-3">Quality</h3>
+          <p class="text-gray-700">We never compromise on quality. Every product in our stores meets our strict standards for freshness, taste, and nutritional value. We believe good food is the foundation of a good life.</p>
+        </div>
+      </div>
+      
+      <div class="mt-12 bg-primary/10 rounded-lg p-8 max-w-3xl mx-auto">
+        <h3 class="font-bold text-xl mb-4 text-center">Our Mission</h3>
+        <p class="text-gray-700 text-center italic">"To make fresh, organic, and sustainably-sourced food accessible to all, while supporting local farmers, promoting environmental stewardship, and building stronger communities."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sustainability Section -->
+  <section class="py-16 px-6 md:px-12 bg-gray-50">
+    <div class="container mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-4">Our Commitment to Sustainability</h2>
+      <p class="text-gray-700 text-center max-w-3xl mx-auto mb-12">Sustainability isn't just a buzzword at Fresh Basket—it's at the core of everything we do.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+        <div>
+          <h3 class="font-bold text-2xl mb-4">Organic Farming Practices</h3>
+          <p class="text-gray-700 mb-4">We partner exclusively with farmers who follow organic and regenerative agricultural practices. This means no synthetic pesticides or fertilizers, crop rotation to maintain soil health, and farming methods that protect biodiversity.</p>
+          <p class="text-gray-700">Our farm partners work with nature, not against it, resulting in healthier ecosystems and more nutritious food. We regularly visit our partner farms to ensure they maintain our high standards for sustainable farming.</p>
+        </div>
+        <div>
+          <img src="https://readdy.ai/api/search-image?query=organic%2520farm%2520with%2520diverse%2520crops%2C%2520workers%2520harvesting%2520vegetables%2C%2520sustainable%2520farming%2520practices%2520visible%2C%2520irrigation%2520systems%2C%2520natural%2520pest%2520control%2520methods%2C%2520beautiful%2520landscape%2C%2520golden%2520hour%2520lighting%2C%2520professional%2520agriculture%2520photography&width=600&height=400&seq=303&orientation=landscape" alt="Organic Farming Practices" class="rounded-lg shadow-lg w-full h-auto object-cover">
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+        <div class="order-2 md:order-1">
+          <img src="https://readdy.ai/api/search-image?query=modern%2520grocery%2520store%2520with%2520sustainable%2520packaging%2C%2520bulk%2520food%2520section%2520with%2520glass%2520containers%2C%2520customers%2520using%2520reusable%2520bags%2C%2520minimal%2520plastic%2520visible%2C%2520eco-friendly%2520design%2C%2520bright%2520clean%2520environment%2C%2520professional%2520retail%2520photography&width=600&height=400&seq=304&orientation=landscape" alt="Waste Reduction Efforts" class="rounded-lg shadow-lg w-full h-auto object-cover">
+        </div>
+        <div class="order-1 md:order-2">
+          <h3 class="font-bold text-2xl mb-4">Waste Reduction Efforts</h3>
+          <p class="text-gray-700 mb-4">We're committed to minimizing waste throughout our operations. Our stores feature bulk food sections that reduce packaging waste, and we encourage customers to bring reusable bags and containers.</p>
+          <p class="text-gray-700">Unsold but still edible food is donated to local food banks and community organizations. Food scraps are composted, and we've implemented comprehensive recycling programs at all locations. Our goal is to achieve zero waste across all operations by 2030.</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h3 class="font-bold text-2xl mb-4">Local Sourcing Commitment</h3>
+          <p class="text-gray-700 mb-4">We prioritize locally-grown and produced items whenever possible. At least 60% of our products come from within a 250-mile radius of each store, reducing transportation emissions and supporting local economies.</p>
+          <p class="text-gray-700">Our local sourcing program has helped launch dozens of small food businesses and kept family farms thriving. We're proud to serve as a bridge between local producers and conscious consumers who value fresh, sustainable food.</p>
+        </div>
+        <div>
+          <img src="https://readdy.ai/api/search-image?query=farmers%2520market%2520scene%2520with%2520diverse%2520local%2520vendors%2520selling%2520fresh%2520produce%2C%2520handshake%2520between%2520farmer%2520and%2520buyer%2C%2520colorful%2520vegetable%2520displays%2C%2520community%2520atmosphere%2C%2520signs%2520indicating%2520local%2520sourcing%2C%2520bright%2520natural%2520lighting%2C%2520professional%2520documentary%2520photography&width=600&height=400&seq=305&orientation=landscape" alt="Local Sourcing Commitment" class="rounded-lg shadow-lg w-full h-auto object-cover">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="py-16 px-6 md:px-12 bg-white">
+    <div class="container mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-4">Meet Our Team</h2>
+      <p class="text-gray-700 text-center max-w-3xl mx-auto mb-12">The passionate people behind Fresh Basket who make our mission possible every day.</p>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Team Member 1 -->
+        <div class="team-card bg-white rounded-lg shadow-sm overflow-hidden">
+          <div class="relative">
+            <img src="https://readdy.ai/api/search-image?query=professional%2520headshot%2520of%2520female%2520CEO%2520in%2520her%252040s%2C%2520Asian%2520ethnicity%2C%2520business%2520casual%2520attire%2C%2520confident%2520smile%2C%2520neutral%2520background%2C%2520warm%2520lighting%2C%2520high-quality%2520portrait%2520photography&width=400&height=400&seq=306&orientation=squarish" alt="Elizabeth Chen" class="w-full h-64 object-cover object-top">
+            <div class="team-social absolute inset-0 bg-primary/80 flex items-center justify-center space-x-4">
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-linkedin-fill text-primary"></i>
+              </a>
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-twitter-x-fill text-primary"></i>
+              </a>
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-mail-fill text-primary"></i>
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-bold text-lg">Elizabeth Chen</h3>
+            <p class="text-gray-600 mb-3">Co-Founder & CEO</p>
+            <p class="text-sm text-gray-700">With a background in sustainable agriculture, Elizabeth leads our company vision and strategic partnerships.</p>
+          </div>
+        </div>
+        
+        <!-- Team Member 2 -->
+        <div class="team-card bg-white rounded-lg shadow-sm overflow-hidden">
+          <div class="relative">
+            <img src="https://readdy.ai/api/search-image?query=professional%2520headshot%2520of%2520male%2520COO%2520in%2520his%252040s%2C%2520Asian%2520ethnicity%2C%2520business%2520casual%2520attire%2C%2520friendly%2520smile%2C%2520neutral%2520background%2C%2520warm%2520lighting%2C%2520high-quality%2520portrait%2520photography&width=400&height=400&seq=307&orientation=squarish" alt="Michael Chen" class="w-full h-64 object-cover object-top">
+            <div class="team-social absolute inset-0 bg-primary/80 flex items-center justify-center space-x-4">
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-linkedin-fill text-primary"></i>
+              </a>
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-twitter-x-fill text-primary"></i>
+              </a>
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-mail-fill text-primary"></i>
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-bold text-lg">Michael Chen</h3>
+            <p class="text-gray-600 mb-3">Co-Founder & COO</p>
+            <p class="text-sm text-gray-700">Michael oversees our daily operations and supply chain, ensuring quality and sustainability at every step.</p>
+          </div>
+        </div>
+        
+        <!-- Team Member 3 -->
+        <div class="team-card bg-white rounded-lg shadow-sm overflow-hidden">
+          <div class="relative">
+            <img src="https://readdy.ai/api/search-image?query=professional%2520headshot%2520of%2520female%2520marketing%2520director%2520in%2520her%252030s%2C%2520African%2520American%2520ethnicity%2C%2520business%2520casual%2520attire%2C%2520confident%2520smile%2C%2520neutral%2520background%2C%2520warm%2520lighting%2C%2520high-quality%2520portrait%2520photography&width=400&height=400&seq=308&orientation=squarish" alt="Jasmine Williams" class="w-full h-64 object-cover object-top">
+            <div class="team-social absolute inset-0 bg-primary/80 flex items-center justify-center space-x-4">
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-linkedin-fill text-primary"></i>
+              </a>
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-twitter-x-fill text-primary"></i>
+              </a>
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-mail-fill text-primary"></i>
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-bold text-lg">Jasmine Williams</h3>
+            <p class="text-gray-600 mb-3">Marketing Director</p>
+            <p class="text-sm text-gray-700">Jasmine leads our marketing initiatives, focusing on educating consumers about sustainable food choices.</p>
+          </div>
+        </div>
+        
+        <!-- Team Member 4 -->
+        <div class="team-card bg-white rounded-lg shadow-sm overflow-hidden">
+          <div class="relative">
+            <img src="https://readdy.ai/api/search-image?query=professional%2520headshot%2520of%2520male%2520sustainability%2520director%2520in%2520his%252030s%2C%2520Hispanic%2520ethnicity%2C%2520business%2520casual%2520attire%2C%2520friendly%2520smile%2C%2520neutral%2520background%2C%2520warm%2520lighting%2C%2520high-quality%2520portrait%2520photography&width=400&height=400&seq=309&orientation=squarish" alt="Carlos Rodriguez" class="w-full h-64 object-cover object-top">
+            <div class="team-social absolute inset-0 bg-primary/80 flex items-center justify-center space-x-4">
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-linkedin-fill text-primary"></i>
+              </a>
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-twitter-x-fill text-primary"></i>
+              </a>
+              <a href="#" class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-gray-100 transition-colors">
+                <i class="ri-mail-fill text-primary"></i>
+              </a>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-bold text-lg">Carlos Rodriguez</h3>
+            <p class="text-gray-600 mb-3">Sustainability Director</p>
+            <p class="text-sm text-gray-700">Carlos develops and implements our sustainability initiatives, from packaging to energy conservation.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-12 text-center">
+        <a href="#" class="inline-block bg-primary text-[#0A1D37] px-6 py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-shadow !rounded-button whitespace-nowrap">View Full Team</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-16 px-6 md:px-12 bg-gray-50">
+    <div class="container mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-4">What Our Customers Say</h2>
+      <p class="text-gray-700 text-center max-w-3xl mx-auto mb-12">Hear from the people who shop with us every day.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Testimonial 1 -->
+        <div class="testimonial-card bg-white rounded-lg shadow-sm p-8">
+          <div class="flex items-center text-yellow-400 mb-4">
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+          </div>
+          <p class="text-gray-700 italic mb-6">"Fresh Basket has transformed how my family eats. The quality of their produce is exceptional, and I love knowing exactly where my food comes from. Their commitment to sustainability aligns perfectly with our values."</p>
+          <div class="flex items-center">
+            <img src="https://readdy.ai/api/search-image?query=headshot%2520of%2520middle-aged%2520woman%2C%2520casual%2520attire%2C%2520natural%2520smile%2C%2520outdoor%2520setting%2C%2520soft%2520lighting%2C%2520candid%2520portrait%2520style&width=60&height=60&seq=310&orientation=squarish" alt="Sarah Johnson" class="w-12 h-12 rounded-full object-cover mr-4">
+            <div>
+              <h4 class="font-medium">Sarah Johnson</h4>
+              <p class="text-sm text-gray-600">Portland, OR • Customer since 2015</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Testimonial 2 -->
+        <div class="testimonial-card active bg-white rounded-lg shadow-sm p-8">
+          <div class="flex items-center text-yellow-400 mb-4">
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+          </div>
+          <p class="text-gray-700 italic mb-6">"As a chef, I'm incredibly particular about ingredients. Fresh Basket consistently provides the highest quality produce and specialty items that help my restaurant stand out. Their dedication to supporting local farmers makes them an invaluable partner."</p>
+          <div class="flex items-center">
+            <img src="https://readdy.ai/api/search-image?query=headshot%2520of%2520professional%2520male%2520chef%2520in%2520his%252030s%2C%2520chef%2520coat%2C%2520confident%2520expression%2C%2520kitchen%2520background%2C%2520professional%2520lighting%2C%2520portrait%2520photography&width=60&height=60&seq=311&orientation=squarish" alt="David Martinez" class="w-12 h-12 rounded-full object-cover mr-4">
+            <div>
+              <h4 class="font-medium">David Martinez</h4>
+              <p class="text-sm text-gray-600">Seattle, WA • Customer since 2018</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Testimonial 3 -->
+        <div class="testimonial-card bg-white rounded-lg shadow-sm p-8">
+          <div class="flex items-center text-yellow-400 mb-4">
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+          </div>
+          <p class="text-gray-700 italic mb-6">"I've been shopping at Fresh Basket since they opened their first store. The staff is knowledgeable and friendly, and I appreciate their transparency about where products come from. Their home delivery service has been a game-changer for our busy family."</p>
+          <div class="flex items-center">
+            <img src="https://readdy.ai/api/search-image?query=headshot%2520of%2520senior%2520woman%2520in%2520her%252060s%2C%2520casual%2520attire%2C%2520warm%2520smile%2C%2520home%2520setting%2C%2520natural%2520lighting%2C%2520authentic%2520portrait%2520style&width=60&height=60&seq=312&orientation=squarish" alt="Margaret Wilson" class="w-12 h-12 rounded-full object-cover mr-4">
+            <div>
+              <h4 class="font-medium">Margaret Wilson</h4>
+              <p class="text-sm text-gray-600">Eugene, OR • Customer since 2012</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partner Farms Section -->
+  <section class="py-16 px-6 md:px-12 bg-white">
+    <div class="container mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-4">Our Partner Farms</h2>
+      <p class="text-gray-700 text-center max-w-3xl mx-auto mb-12">Meet some of the local farms and producers who make Fresh Basket possible.</p>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Partner 1 -->
+        <div class="partner-card bg-white rounded-lg shadow-sm overflow-hidden">
+          <img src="https://readdy.ai/api/search-image?query=organic%2520vegetable%2520farm%2520with%2520rows%2520of%2520diverse%2520crops%2C%2520farm%2520workers%2C%2520irrigation%2520systems%2C%2520mountains%2520in%2520background%2C%2520beautiful%2520landscape%2C%2520golden%2520hour%2520lighting%2C%2520professional%2520agriculture%2520photography&width=400&height=250&seq=313&orientation=landscape" alt="Willamette Valley Organics" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="font-bold text-lg mb-2">Willamette Valley Organics</h3>
+            <p class="text-sm text-gray-600 mb-3">Salem, OR • Partner since 2010</p>
+            <p class="text-sm text-gray-700">A family-owned farm specializing in organic vegetables and berries. Their regenerative farming practices have restored 200 acres of previously depleted soil.</p>
+            <div class="flex mt-4">
+              <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-2">Organic Certified</span>
+              <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Regenerative</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Partner 2 -->
+        <div class="partner-card bg-white rounded-lg shadow-sm overflow-hidden">
+          <img src="https://readdy.ai/api/search-image?query=sustainable%2520dairy%2520farm%2520with%2520happy%2520cows%2520grazing%2520on%2520green%2520pasture%2C%2520modern%2520milking%2520facility%2C%2520rolling%2520hills%2C%2520clean%2520environment%2C%2520morning%2520light%2C%2520professional%2520agriculture%2520photography&width=400&height=250&seq=314&orientation=landscape" alt="Cascade Creamery" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="font-bold text-lg mb-2">Cascade Creamery</h3>
+            <p class="text-sm text-gray-600 mb-3">Tillamook, OR • Partner since 2013</p>
+            <p class="text-sm text-gray-700">A cooperative of small dairy farms producing artisanal cheeses and yogurts. Their pasture-raised cows graze on organic fields year-round.</p>
+            <div class="flex mt-4">
+              <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-2">Organic Certified</span>
+              <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Pasture-Raised</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Partner 3 -->
+        <div class="partner-card bg-white rounded-lg shadow-sm overflow-hidden">
+          <img src="https://readdy.ai/api/search-image?query=sustainable%2520apple%2520orchard%2520with%2520rows%2520of%2520trees%2520heavy%2520with%2520fruit%2C%2520workers%2520harvesting%2C%2520mountains%2520in%2520background%2C%2520natural%2520pest%2520management%2520visible%2C%2520beautiful%2520landscape%2C%2520sunset%2520lighting%2C%2520professional%2520agriculture%2520photography&width=400&height=250&seq=315&orientation=landscape" alt="Hood River Orchards" class="w-full h-48 object-cover">
+          <div class="p-6">
+            <h3 class="font-bold text-lg mb-2">Hood River Orchards</h3>
+            <p class="text-sm text-gray-600 mb-3">Hood River, OR • Partner since 2014</p>
+            <p class="text-sm text-gray-700">Specializing in heirloom apple varieties and stone fruits. Their integrated pest management system has eliminated the need for synthetic pesticides.</p>
+            <div class="flex mt-4">
+              <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded mr-2">Organic Certified</span>
+              <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Heritage Varieties</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-12 text-center">
+        <a href="#" class="inline-block bg-primary text-[#0A1D37] px-6 py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-shadow !rounded-button whitespace-nowrap">View All Partners</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 px-6 md:px-12 bg-primary/10">
+    <div class="container mx-auto">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6">Join the Fresh Basket Community</h2>
+        <p class="text-gray-700 mb-8">Be part of our journey to make sustainable, organic food accessible to all. Shop with us in-store or online, and experience the Fresh Basket difference.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="./products.html" class="bg-primary text-[#0A1D37] px-6 py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-shadow !rounded-button whitespace-nowrap">Shop Our Products</a>
+          <a href="#" class="bg-white text-[#0A1D37] px-6 py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-shadow !rounded-button whitespace-nowrap">Find a Store Near You</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="py-16 px-6 md:px-12 bg-white">
+    <div class="container mx-auto">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-2xl md:text-3xl font-bold mb-4">Stay Connected</h2>
+        <p class="text-gray-700 mb-6">Subscribe to our newsletter for updates on new products, seasonal recipes, and sustainability initiatives.</p>
+        <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+          <input type="email" placeholder="Enter your email address" class="flex-1 px-4 py-3 rounded-full border-none shadow-sm">
+          <button class="bg-primary text-[#0A1D37] px-6 py-3 rounded-full font-medium shadow-sm !rounded-button whitespace-nowrap">Subscribe</button>
+        </div>
+        <p class="text-xs text-gray-500 mt-4">By subscribing, you agree to receive marketing emails from us. You can unsubscribe at any time.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white py-12">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Column 1 -->
+      <div class="text-center sm:text-left">
+        <a href="./index.html" class="text-2xl font-pacifico text-primary mb-6 block">Fresh Basket</a>
+        <p class="text-gray-600 mb-6">Your one-stop shop for fresh groceries and quality products, delivered right to your doorstep.</p>
+        <div class="flex justify-center sm:justify-start space-x-4">
+          <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+            <i class="ri-facebook-fill"></i>
+          </a>
+          <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+            <i class="ri-twitter-x-fill"></i>
+          </a>
+          <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+            <i class="ri-instagram-fill"></i>
+          </a>
+          <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+            <i class="ri-pinterest-fill"></i>
+          </a>
+        </div>
+      </div>
+      <!-- Column 2 -->
+      <div class="text-center sm:text-left">
+        <h4 class="font-semibold text-lg mb-6">Shop</h4>
+        <ul class="space-y-3">
+          <li><a href="./categories.html" class="text-gray-600 hover:text-primary transition-colors">Categories</a></li>
+          <li><a href="./products.html" class="text-gray-600 hover:text-primary transition-colors">All Products</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">New Arrivals</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Best Sellers</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Special Offers</a></li>
+        </ul>
+      </div>
+      <!-- Column 3 -->
+      <div class="text-center sm:text-left">
+        <h4 class="font-semibold text-lg mb-6">Company</h4>
+        <ul class="space-y-3">
+          <li><a href="./about.html" class="text-gray-600 hover:text-primary transition-colors">About Us</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Careers</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Blog</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Press</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Contact Us</a></li>
+        </ul>
+      </div>
+      <!-- Column 4 -->
+      <div class="text-center sm:text-left">
+        <h4 class="font-semibold text-lg mb-6">Help</h4>
+        <ul class="space-y-3">
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">FAQs</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Shipping</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Returns</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Track Order</a></li>
+          <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- Bottom Footer -->
+    <div class="mt-12 pt-8 border-t border-gray-200">
+      <div class="flex justify-center">
+        <div class="text-center">
+          <p class="text-gray-600 text-sm">© 2024 Fresh Basket. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Overlay -->
+<div class="fixed inset-0 bg-black/50 z-40 overlay" id="overlay"></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const closeMenu = document.getElementById('closeMenu');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const menuOverlay = document.getElementById('menuOverlay');
+  const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+
+  function openMobileMenu() {
+    mobileMenu.classList.add('open');
+    menuOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('open');
+    menuOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  menuToggle.addEventListener('click', openMobileMenu);
+  closeMenu.addEventListener('click', closeMobileMenu);
+  menuOverlay.addEventListener('click', closeMobileMenu);
+
+  // Mobile theme toggle
+  mobileThemeToggle.addEventListener('click', function() {
+    body.classList.toggle('dark-mode');
+  });
+
+  // Cart sidebar toggle
+  const cartButton = document.getElementById('cartButton');
+  const closeCart = document.getElementById('closeCart');
+  const continueShopping = document.getElementById('continueShopping');
+  const cartSidebar = document.querySelector('.cart-sidebar');
+  const overlay = document.getElementById('overlay');
+  if (cartButton && closeCart && continueShopping && cartSidebar && overlay) {
+    function openCart() {
+      cartSidebar.classList.add('open');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeCartSidebar() {
+      cartSidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    cartButton.addEventListener('click', openCart);
+    closeCart.addEventListener('click', closeCartSidebar);
+    continueShopping.addEventListener('click', closeCartSidebar);
+    overlay.addEventListener('click', closeCartSidebar);
+  }
+
+  // Testimonial rotation
+  const testimonials = document.querySelectorAll('.testimonial-card');
+  if (testimonials.length > 0) {
+    let current = 0;
+    setInterval(() => {
+      testimonials[current].classList.remove('active');
+      current = (current + 1) % testimonials.length;
+      testimonials[current].classList.add('active');
+    }, 5000);
+  }
+});
+</script>
+</body>
+</html>

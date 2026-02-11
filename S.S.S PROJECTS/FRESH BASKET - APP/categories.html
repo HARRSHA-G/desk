@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fresh Basket - Categories</title>
+    <meta name="description" content="Explore our wide range of grocery categories. From fresh produce to pantry essentials, find everything you need.">
+    <meta name="keywords" content="grocery categories, fresh produce, dairy, bakery, meat, seafood, pantry, organic food">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#A8E6CF',
+                        secondary: '#F8EFEA'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F8EFEA;
+            color: #0A1D37;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .navbar {
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .category-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #A8E6CF;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background-color: white;
+            z-index: 40;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        .mobile-menu-header {
+            padding: 1rem;
+            border-bottom: 1px solid #F8EFEA;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mobile-menu-content {
+            padding: 1rem;
+            overflow-y: auto;
+            height: calc(100vh - 60px);
+        }
+        .mobile-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #0A1D37;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .mobile-menu-item:hover {
+            background-color: #F8EFEA;
+            color: #A8E6CF;
+        }
+        .mobile-menu-item i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 30;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="navbar fixed top-0 left-0 right-0 z-50 bg-white/80 shadow-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <a href="./index.html" class="text-2xl font-pacifico text-primary">Fresh Basket</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="./index.html" class="nav-link">Home</a>
+                    <a href="./categories.html" class="nav-link">Categories</a>
+                    <a href="./products.html" class="nav-link">Products</a>
+                    <a href="./about.html" class="nav-link">About Us</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 hover:bg-secondary rounded-full transition-colors">
+                        <i class="ri-search-line text-xl"></i>
+                    </button>
+                    <button class="p-2 hover:bg-secondary rounded-full transition-colors">
+                        <i class="ri-shopping-cart-line text-xl"></i>
+                    </button>
+                    <button id="menuToggle" class="md:hidden p-2 hover:bg-secondary rounded-full transition-colors">
+                        <i class="ri-menu-line text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 pt-24 pb-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Our Categories</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Browse through our carefully curated selection of grocery categories to find exactly what you need.</p>
+        </section>
+
+        <!-- Categories Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Fresh Produce -->
+            <div class="category-card bg-white rounded-xl p-6">
+                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                    <i class="ri-leaf-line text-2xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Fresh Produce</h3>
+                <p class="text-gray-600 mb-4">Farm-fresh fruits and vegetables</p>
+                <a href="./products.html?category=produce" class="text-primary font-medium flex items-center">
+                    View Products <i class="ri-arrow-right-line ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Dairy & Eggs -->
+            <div class="category-card bg-white rounded-xl p-6">
+                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                    <i class="ri-cup-line text-2xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Dairy & Eggs</h3>
+                <p class="text-gray-600 mb-4">Fresh dairy products and eggs</p>
+                <a href="./products.html?category=dairy" class="text-primary font-medium flex items-center">
+                    View Products <i class="ri-arrow-right-line ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Bakery -->
+            <div class="category-card bg-white rounded-xl p-6">
+                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                    <i class="ri-bread-line text-2xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Bakery</h3>
+                <p class="text-gray-600 mb-4">Freshly baked goods and breads</p>
+                <a href="./products.html?category=bakery" class="text-primary font-medium flex items-center">
+                    View Products <i class="ri-arrow-right-line ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Meat & Seafood -->
+            <div class="category-card bg-white rounded-xl p-6">
+                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                    <i class="ri-fish-line text-2xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Meat & Seafood</h3>
+                <p class="text-gray-600 mb-4">Premium quality meats and seafood</p>
+                <a href="./products.html?category=meat" class="text-primary font-medium flex items-center">
+                    View Products <i class="ri-arrow-right-line ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Pantry -->
+            <div class="category-card bg-white rounded-xl p-6">
+                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                    <i class="ri-store-2-line text-2xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Pantry</h3>
+                <p class="text-gray-600 mb-4">Essential dry goods and staples</p>
+                <a href="./products.html?category=pantry" class="text-primary font-medium flex items-center">
+                    View Products <i class="ri-arrow-right-line ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Beverages -->
+            <div class="category-card bg-white rounded-xl p-6">
+                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                    <i class="ri-drinks-line text-2xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Beverages</h3>
+                <p class="text-gray-600 mb-4">Drinks and refreshments</p>
+                <a href="./products.html?category=beverages" class="text-primary font-medium flex items-center">
+                    View Products <i class="ri-arrow-right-line ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Snacks -->
+            <div class="category-card bg-white rounded-xl p-6">
+                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                    <i class="ri-cookie-line text-2xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Snacks</h3>
+                <p class="text-gray-600 mb-4">Delicious snacks and treats</p>
+                <a href="./products.html?category=snacks" class="text-primary font-medium flex items-center">
+                    View Products <i class="ri-arrow-right-line ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Organic -->
+            <div class="category-card bg-white rounded-xl p-6">
+                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                    <i class="ri-leaf-fill text-2xl text-primary"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Organic</h3>
+                <p class="text-gray-600 mb-4">Certified organic products</p>
+                <a href="./products.html?category=organic" class="text-primary font-medium flex items-center">
+                    View Products <i class="ri-arrow-right-line ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Column 1 -->
+                <div class="text-center sm:text-left">
+                    <a href="./index.html" class="text-2xl font-pacifico text-primary mb-6 block">Fresh Basket</a>
+                    <p class="text-gray-600 mb-6">Your one-stop shop for fresh groceries and quality products, delivered right to your doorstep.</p>
+                    <div class="flex justify-center sm:justify-start space-x-4">
+                        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                            <i class="ri-facebook-fill"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                            <i class="ri-twitter-x-fill"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                            <i class="ri-instagram-fill"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                            <i class="ri-pinterest-fill"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Column 2 -->
+                <div class="text-center sm:text-left">
+                    <h4 class="font-semibold text-lg mb-6">Shop</h4>
+                    <ul class="space-y-3">
+                        <li><a href="./categories.html" class="text-gray-600 hover:text-primary transition-colors">Categories</a></li>
+                        <li><a href="./products.html" class="text-gray-600 hover:text-primary transition-colors">All Products</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Best Sellers</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Special Offers</a></li>
+                    </ul>
+                </div>
+                <!-- Column 3 -->
+                <div class="text-center sm:text-left">
+                    <h4 class="font-semibold text-lg mb-6">Company</h4>
+                    <ul class="space-y-3">
+                        <li><a href="./about.html" class="text-gray-600 hover:text-primary transition-colors">About Us</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Press</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                <!-- Column 4 -->
+                <div class="text-center sm:text-left">
+                    <h4 class="font-semibold text-lg mb-6">Help</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">FAQs</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Shipping</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Returns</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Track Order</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Bottom Footer -->
+            <div class="mt-12 pt-8 border-t border-gray-200">
+                <div class="flex justify-center">
+                    <div class="text-center">
+                        <p class="text-gray-600 text-sm">© 2024 Fresh Basket. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <a href="./index.html" class="text-xl font-pacifico text-primary">Fresh Basket</a>
+            <button id="closeMenu" class="w-10 h-10 flex items-center justify-center">
+                <i class="ri-close-line text-2xl"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-content">
+            <a href="./index.html" class="mobile-menu-item">
+                <i class="ri-home-line"></i>
+                <span>Home</span>
+            </a>
+            <a href="./categories.html" class="mobile-menu-item">
+                <i class="ri-apps-line"></i>
+                <span>Categories</span>
+            </a>
+            <a href="./products.html" class="mobile-menu-item">
+                <i class="ri-shopping-bag-line"></i>
+                <span>Products</span>
+            </a>
+            <a href="./about.html" class="mobile-menu-item">
+                <i class="ri-information-line"></i>
+                <span>About Us</span>
+            </a>
+            <div class="p-4 mt-4">
+                <div class="search-container relative">
+                    <input type="text" placeholder="Search products..." class="w-full px-4 py-2 rounded-full text-sm bg-gray-50 border border-gray-200">
+                    <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <i class="ri-search-line"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 mt-4 border-t border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-sm font-medium">Dark Mode</span>
+                    <div class="theme-toggle bg-gray-100 border border-gray-200" id="mobileThemeToggle">
+                        <div class="theme-toggle-circle bg-primary"></div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+                        <i class="ri-facebook-fill"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+                        <i class="ri-twitter-x-fill"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+                        <i class="ri-instagram-fill"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const closeMenu = document.getElementById('closeMenu');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+
+            function openMobileMenu() {
+                mobileMenu.classList.add('open');
+                menuOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('open');
+                menuOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            menuToggle.addEventListener('click', openMobileMenu);
+            closeMenu.addEventListener('click', closeMobileMenu);
+            menuOverlay.addEventListener('click', closeMobileMenu);
+
+            // Mobile theme toggle
+            mobileThemeToggle.addEventListener('click', function() {
+                body.classList.toggle('dark-mode');
+            });
+        });
+    </script>
+</body>
+</html> 

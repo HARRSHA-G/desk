@@ -1,0 +1,24 @@
+=====================================
+USER ACCEPTANCE TESTING (UAT)
+=====================================
+
+Scope
+-----
+- Scenario-based checks against user stories for admins and standard users.
+
+Approach
+--------
+- Define acceptance criteria per story (Given/When/Then) and run on a staging build with realistic data.
+
+Coverage
+--------
+- End-to-end flows (category setup + failure mode entry + fishbone usage), including navigation, messaging, and exports if any.
+
+Cross-platform
+--------------
+- Run key scenarios on desktop/mobile/tablet and major browsers; verify dark/light theme fidelity.
+
+Sign-off
+--------
+- Capture evidence (screens, recordings), track defects to closure, and rerun impacted scenarios after fixes.
+

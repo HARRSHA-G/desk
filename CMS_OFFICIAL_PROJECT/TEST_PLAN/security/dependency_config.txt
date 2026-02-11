@@ -1,0 +1,20 @@
+====================================
+DEPENDENCY & CONFIG SECURITY
+====================================
+
+What to test
+------------
+- Dependency CVE scans, pinned versions, secure settings (DEBUG off, allowed hosts, HTTPS), and secrets management.
+
+Recommended tools
+-----------------
+- pip-audit/safety, bandit, django-secure checklists, dotenv-linter.
+
+Automation approach
+-------------------
+- Run security linters in CI; fail builds on high-severity CVEs; review env/infra config per release.
+
+Critical edge cases
+-------------------
+- Secrets in logs, misconfigured CORS, open admin endpoints, missing TLS, default passwords, dark/light assets served from correct origins/CDN.
+

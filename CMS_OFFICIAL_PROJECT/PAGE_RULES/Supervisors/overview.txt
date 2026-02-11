@@ -1,0 +1,6 @@
+Supervisor Page Rules
+
+1. Supervisor assignment is only relevant for single-flat/unit projects; multi-flat or multi-plot records must stay assigned via CRM and should not appear in the supervisor assignment UI.
+2. When supervisors manage projects, only list IDs/payloads provided by the backend (the bridge APIs already filter to single-unit projects when returning assignments).
+3. Make sure supervisor-related forms respect the CRM-managed flag—never override or display the “CRM only” behavior on multi-unit cards/operations.
+4. Any table or API request that surfaces supervisor projects should use the same CRM ownership note as the Projects and Sales pages so team members know not to edit those assignments locally.

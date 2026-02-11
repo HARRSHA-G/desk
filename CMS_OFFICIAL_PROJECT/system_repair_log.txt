@@ -1,0 +1,41 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260207131549
+Username: HARSHAVARDHAN\Asus
+RunAs User: HARSHAVARDHAN\Asus
+Configuration Name: 
+Machine: HARSHAVARDHAN (Microsoft Windows NT 10.0.26200.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -noexit -command try { . "c:\Users\Asus\AppData\Local\Programs\Antigravity\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+Process ID: 21336
+PSVersion: 5.1.26100.7705
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.7705
+BuildVersion: 10.0.26100.7705
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is D:\CMS_OFFICIAL_PROJECT\system_repair_log.txt
+==========================================
+   System Environment Repair Tool
+==========================================
+Current User Path Backup saved to log.
+C:\Program Files\Go\bin;C:\WINDOWS\System32;;C:\Users\Asus\AppData\Local\Programs\Antigravity\bin;c:\Users\Asus\.antigravity\extensions\ms-python.debugpy-2025.18.0-win32-x64\bundled\scripts\noConfigScripts;C:\Windows\System32
+OK: C:\Windows\System32
+MISSING: C:\Windows (Adding it now...)
+MISSING: C:\Windows\System32\Wbem (Adding it now...)
+MISSING: C:\Windows\System32\WindowsPowerShell\v1.0\ (Adding it now...)
+WARNING: SKIPPING: C:\Program Files\Git\cmd (Directory does not exist on this computer)
+MISSING: C:\src\flutter\bin (Adding it now...)
+OK: C:\Program Files\Go\bin
+
+SUCCESS: System Path has been repaired!
+The following issues should be resolved:
+1. CMD / Command Prompt opening
+2. Git command not found
+3. Flutter command not found
+**********************
+Windows PowerShell transcript end
+End time: 20260207131550
+**********************

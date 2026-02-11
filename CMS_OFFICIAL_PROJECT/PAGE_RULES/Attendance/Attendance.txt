@@ -1,0 +1,5 @@
+Attendance Page Rules
+
+1. The `Attendance.jsx` page loads batches and records from the attendance bridge endpoints; do not recalculate totals locally.
+2. Ensure role-sensitive filtering so supervisors only see their assigned batches; any check-in writes send batch/member IDs and rely on backend validation.
+3. Use backend timestamps/status values instead of heuristics to avoid conflicts with CRM-managed CRM data.

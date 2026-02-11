@@ -1,0 +1,32 @@
+===============================
+API INTEGRATION
+===============================
+
+What to test
+------------
+- Django views/DRF endpoint request/response contracts.
+- Auth and permission paths across roles.
+- Pagination, filtering, and sorting behaviors.
+- File uploads and related validation.
+- Database side effects created by requests.
+
+Recommended tools
+-----------------
+- pytest-django with DRF APIClient plus httpx/requests for black-box checks.
+- schemathesis for schema-based fuzzing.
+- sqlite for fast runs; Postgres for parity when available.
+
+Automation approach
+-------------------
+- Run tagged API tests in CI.
+- Seed fixtures for users/roles and sample projects/payments/expenses/attendance.
+- Record snapshots for common responses.
+
+Critical edge cases
+-------------------
+- Expired or invalid tokens.
+- Role-based access (builder/supervisor/customer/channel partner).
+- Large payloads and malformed JSON.
+- Idempotent retries and rate-limits.
+- Deep links with query params and online/offline retries.
+

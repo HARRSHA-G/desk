@@ -1,0 +1,28 @@
+==============================
+UNIT TESTING (FUNCTIONAL)
+==============================
+
+What to test
+------------
+- Model/business logic and save hooks.
+- Permission helpers and serializers.
+- Calculations with idempotent writes.
+- Correct error raising on invalid inputs.
+
+Recommended tools
+-----------------
+- pytest/pytest-django, Django TestCase.
+- factory_boy, freezegun for time, mock for external calls.
+
+Automation approach
+-------------------
+- Run in CI per commit/PR with coverage thresholds.
+- Isolate DB with transactions and include seed fixtures for representative roles (builder, supervisor, customer).
+
+Critical edge cases
+-------------------
+- Null/blank fields and boundary numeric/decimal ranges.
+- Timezone-aware datetimes and concurrent updates.
+- Soft-deletes vs cascades.
+- Dark/light defaults in theme-preference logic.
+

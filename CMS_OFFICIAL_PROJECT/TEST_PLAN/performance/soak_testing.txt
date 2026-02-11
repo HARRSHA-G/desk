@@ -1,0 +1,24 @@
+===============================
+SOAK / ENDURANCE TESTING
+===============================
+
+Goal
+----
+- Detect memory leaks, resource exhaustion, and slow degradation over long durations.
+
+Tooling
+-------
+- k6/locust/JMeter with steady expected load for hours.
+
+Metrics
+-------
+- Memory/CPU trends, file descriptors, DB connections, latency drift, error accumulation.
+
+Checks
+------
+- Log sizes/rotation, cache growth, scheduled tasks/cron behavior over time.
+
+Cadence
+-------
+- Run periodically (e.g., weekly) or before large launches; ensure environment monitoring is in place.
+

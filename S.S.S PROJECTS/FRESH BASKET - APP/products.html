@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fresh Basket - Products</title>
+<meta name="description" content="Browse our wide selection of products with advanced filtering options. Find exactly what you need with our easy-to-use search and filter tools.">
+<meta name="keywords" content="groceries, products, fresh produce, dairy, bakery, meat, seafood, organic food, online grocery shopping">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#A8E6CF',secondary:'#F8EFEA'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+body {
+font-family: 'Poppins', sans-serif;
+background-color: #F8EFEA;
+color: #0A1D37;
+}
+.navbar {
+backdrop-filter: blur(10px);
+transition: all 0.3s ease;
+}
+.card {
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+transform: translateY(-8px);
+box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+}
+.nav-link {
+position: relative;
+}
+.nav-link::after {
+content: '';
+position: absolute;
+bottom: -4px;
+left: 0;
+width: 0;
+height: 2px;
+background-color: #A8E6CF;
+transition: width 0.3s ease;
+}
+.nav-link:hover::after, .nav-link.active::after {
+width: 100%;
+}
+.mobile-menu {
+position: fixed;
+top: 0;
+left: 0;
+width: 280px;
+height: 100vh;
+background-color: white;
+z-index: 40;
+transform: translateX(-100%);
+transition: transform 0.3s ease-in-out;
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.mobile-menu.open {
+transform: translateX(0);
+}
+.cart-sidebar {
+transform: translateX(100%);
+transition: transform 0.3s ease;
+}
+.cart-sidebar.open {
+transform: translateX(0);
+}
+.overlay {
+opacity: 0;
+visibility: hidden;
+transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.overlay.active {
+opacity: 1;
+visibility: visible;
+}
+.search-container input:focus {
+outline: none;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+.category-tab {
+transition: all 0.3s ease;
+}
+.category-tab.active {
+background-color: #A8E6CF;
+color: #0A1D37;
+}
+.price-slider::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 20px;
+height: 20px;
+border-radius: 50%;
+background: #A8E6CF;
+cursor: pointer;
+}
+.price-slider::-moz-range-thumb {
+width: 20px;
+height: 20px;
+border-radius: 50%;
+background: #A8E6CF;
+cursor: pointer;
+}
+.toast {
+transform: translateY(100px);
+opacity: 0;
+transition: transform 0.5s ease, opacity 0.5s ease;
+}
+.toast.show {
+transform: translateY(0);
+opacity: 1;
+}
+.custom-checkbox {
+display: inline-block;
+position: relative;
+cursor: pointer;
+user-select: none;
+}
+.custom-checkbox input {
+position: absolute;
+opacity: 0;
+cursor: pointer;
+height: 0;
+width: 0;
+}
+.checkmark {
+position: absolute;
+top: 0;
+left: 0;
+height: 20px;
+width: 20px;
+background-color: #fff;
+border: 1px solid #ddd;
+border-radius: 4px;
+}
+.custom-checkbox:hover input ~ .checkmark {
+background-color: #f5f5f5;
+}
+.custom-checkbox input:checked ~ .checkmark {
+background-color: #A8E6CF;
+border-color: #A8E6CF;
+}
+.checkmark:after {
+content: "";
+position: absolute;
+display: none;
+}
+.custom-checkbox input:checked ~ .checkmark:after {
+display: block;
+}
+.custom-checkbox .checkmark:after {
+left: 7px;
+top: 3px;
+width: 6px;
+height: 10px;
+border: solid white;
+border-width: 0 2px 2px 0;
+transform: rotate(45deg);
+}
+.custom-switch {
+position: relative;
+display: inline-block;
+width: 46px;
+height: 24px;
+}
+.custom-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #ccc;
+transition: .4s;
+border-radius: 24px;
+}
+.slider:before {
+position: absolute;
+content: "";
+height: 18px;
+width: 18px;
+left: 3px;
+bottom: 3px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+input:checked + .slider {
+background-color: #A8E6CF;
+}
+input:checked + .slider:before {
+transform: translateX(22px);
+}
+.view-toggle-btn {
+transition: all 0.3s ease;
+}
+.view-toggle-btn.active {
+background-color: #A8E6CF;
+color: #0A1D37;
+}
+.list-view .product-card {
+display: flex;
+flex-direction: row;
+height: auto;
+}
+.list-view .product-image {
+width: 200px;
+height: 200px;
+}
+.list-view .product-details {
+flex: 1;
+display: flex;
+flex-direction: column;
+}
+.list-view .product-description {
+display: block;
+}
+.grid-view .product-description {
+display: none;
+}
+.dropdown-content {
+display: none;
+position: absolute;
+background-color: white;
+min-width: 160px;
+box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+z-index: 1;
+border-radius: 8px;
+}
+.dropdown:hover .dropdown-content {
+display: block;
+}
+</style>
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar fixed top-0 left-0 right-0 z-50 bg-white/80 shadow-sm">
+    <div class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+            <a href="./index.html" class="text-2xl font-pacifico text-primary">Fresh Basket</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="./index.html" class="nav-link">Home</a>
+                <a href="./categories.html" class="nav-link">Categories</a>
+                <a href="./products.html" class="nav-link active">Products</a>
+                <a href="./about.html" class="nav-link">About Us</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="search-container relative hidden md:block">
+                    <input type="text" placeholder="Search products..." class="w-48 lg:w-64 px-4 py-2 rounded-full text-sm bg-white/10 border-none">
+                    <div class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center">
+                        <i class="ri-search-line"></i>
+                    </div>
+                </div>
+                <button id="cartButton" class="relative w-10 h-10 flex items-center justify-center">
+                    <i class="ri-shopping-cart-line text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </button>
+                <button class="md:hidden w-10 h-10 flex items-center justify-center" id="menuToggle">
+                    <i class="ri-menu-line text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+        <a href="./index.html" class="text-xl font-pacifico text-primary">Fresh Basket</a>
+        <button id="closeMenu" class="w-10 h-10 flex items-center justify-center">
+            <i class="ri-close-line text-2xl"></i>
+        </button>
+    </div>
+    <div class="mobile-menu-content">
+        <a href="./index.html" class="mobile-menu-item">
+            <i class="ri-home-line"></i>
+            <span>Home</span>
+        </a>
+        <a href="./categories.html" class="mobile-menu-item">
+            <i class="ri-apps-line"></i>
+            <span>Categories</span>
+        </a>
+        <a href="./products.html" class="mobile-menu-item">
+            <i class="ri-shopping-bag-line"></i>
+            <span>Products</span>
+        </a>
+        <a href="./about.html" class="mobile-menu-item">
+            <i class="ri-information-line"></i>
+            <span>About Us</span>
+        </a>
+        <div class="p-4 mt-4">
+            <div class="search-container relative">
+                <input type="text" placeholder="Search products..." class="w-full px-4 py-2 rounded-full text-sm bg-gray-50 border border-gray-200">
+                <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <i class="ri-search-line"></i>
+                </div>
+            </div>
+        </div>
+        <div class="p-4 mt-4 border-t border-gray-100">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-sm font-medium">Dark Mode</span>
+                <div class="theme-toggle bg-gray-100 border border-gray-200" id="mobileThemeToggle">
+                    <div class="theme-toggle-circle bg-primary"></div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+                    <i class="ri-facebook-fill"></i>
+                </a>
+                <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+                    <i class="ri-twitter-x-fill"></i>
+                </a>
+                <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full hover:bg-primary hover:text-white transition-colors">
+                    <i class="ri-instagram-fill"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<!-- Cart Sidebar -->
+<div class="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-xl z-50 cart-sidebar p-6 overflow-y-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold">Your Cart (3)</h2>
+        <button id="closeCart" class="w-8 h-8 flex items-center justify-center">
+            <i class="ri-close-line text-xl"></i>
+        </button>
+    </div>
+    <div class="space-y-4 mb-8">
+        <!-- Cart Item Example -->
+        <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded">
+            <img src="https://readdy.ai/api/search-image?query=organic%20fresh%20apples%20on%20white%20background%2C%20studio%20lighting%2C%20high%20quality%20product%20photography&width=80&height=80&seq=1&orientation=squarish" alt="Organic Apples" class="w-16 h-16 object-cover rounded">
+            <div class="flex-1">
+                <h3 class="font-medium">Organic Apples</h3>
+                <p class="text-sm text-gray-500">$4.99/kg</p>
+                <div class="flex items-center mt-1">
+                    <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded">-</button>
+                    <span class="mx-2 text-sm">2</span>
+                    <button class="w-6 h-6 flex items-center justify-center bg-gray-200 rounded">+</button>
+                </div>
+            </div>
+            <div class="text-right">
+                <p class="font-medium">$9.98</p>
+                <button class="text-xs text-gray-500 mt-2">Remove</button>
+            </div>
+        </div>
+    </div>
+    <div class="border-t border-gray-200 pt-4 mb-6">
+        <div class="flex justify-between mb-2">
+            <span>Subtotal</span>
+            <span>$9.98</span>
+        </div>
+        <div class="flex justify-between mb-2">
+            <span>Shipping</span>
+            <span>$4.99</span>
+        </div>
+        <div class="flex justify-between font-semibold text-lg mt-4">
+            <span>Total</span>
+            <span>$14.97</span>
+        </div>
+    </div>
+    <div class="space-y-4">
+        <button class="w-full py-3 bg-primary text-[#0A1D37] font-medium rounded">Proceed to Checkout</button>
+        <button id="continueShopping" class="w-full py-3 bg-transparent border border-gray-300 font-medium rounded">Continue Shopping</button>
+    </div>
+</div>
+
+<!-- Overlay -->
+<div class="fixed inset-0 bg-black/50 z-40 overlay" id="overlay"></div>
+
+<!-- Main Content -->
+<main class="pt-20">
+<!-- Breadcrumb -->
+<div class="bg-gray-100 py-3 px-6 md:px-12">
+<div class="container mx-auto">
+<div class="flex items-center text-sm">
+<a href="https://readdy.ai/home/9865a895-3b98-46b0-a846-9581defa9d2c/e634fd3d-372f-4519-aaba-1e253d8b3eb2" data-readdy="true" class="text-gray-600 hover:text-primary">Home</a>
+<i class="ri-arrow-right-s-line mx-2 text-gray-400"></i>
+<a href="https://readdy.ai/home/9865a895-3b98-46b0-a846-9581defa9d2c/76aedad6-25b8-4275-89ec-18af0b179fad" data-readdy="true" class="text-gray-600 hover:text-primary">Categories</a>
+<i class="ri-arrow-right-s-line mx-2 text-gray-400"></i>
+<span class="text-primary font-medium">All Products</span>
+</div>
+</div>
+</div>
+
+<!-- Main Search Bar -->
+<section class="bg-gradient-to-r from-primary/20 to-primary/5 py-8 px-6 md:px-12">
+<div class="container mx-auto">
+<div class="max-w-3xl mx-auto">
+<h1 class="text-3xl font-bold text-center mb-6">Find Your Perfect Products</h1>
+<div class="relative">
+<input type="text" placeholder="Search by product name, category, or brand..." class="w-full px-5 py-4 pr-12 rounded-lg shadow-sm text-base border-none">
+<button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-primary text-[#0A1D37] w-10 h-10 rounded-full flex items-center justify-center !rounded-button">
+<i class="ri-search-line"></i>
+</button>
+</div>
+<div class="flex flex-wrap justify-center gap-3 mt-4">
+<button class="bg-white px-4 py-2 rounded-full text-sm shadow-sm hover:bg-primary/20 transition-colors !rounded-button whitespace-nowrap">Fresh Produce</button>
+<button class="bg-white px-4 py-2 rounded-full text-sm shadow-sm hover:bg-primary/20 transition-colors !rounded-button whitespace-nowrap">Dairy & Eggs</button>
+<button class="bg-white px-4 py-2 rounded-full text-sm shadow-sm hover:bg-primary/20 transition-colors !rounded-button whitespace-nowrap">Bakery</button>
+<button class="bg-white px-4 py-2 rounded-full text-sm shadow-sm hover:bg-primary/20 transition-colors !rounded-button whitespace-nowrap">Meat & Seafood</button>
+<button class="bg-white px-4 py-2 rounded-full text-sm shadow-sm hover:bg-primary/20 transition-colors !rounded-button whitespace-nowrap">Organic</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Main Content Area -->
+<section class="py-8 px-6 md:px-12">
+<div class="container mx-auto">
+<div class="flex flex-col lg:flex-row gap-8">
+<!-- Filters Sidebar -->
+<div class="lg:w-1/4">
+<div class="bg-white rounded-lg shadow-sm p-6 sticky top-[140px]">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-semibold">Filters</h3>
+<button class="text-sm text-gray-500 hover:text-primary">Clear All</button>
+</div>
+<!-- Categories -->
+<div class="mb-6">
+<h4 class="font-medium mb-4">Categories</h4>
+<div class="space-y-3">
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox" checked>
+<span class="checkmark"></span>
+All Products
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Fresh Produce
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Dairy & Eggs
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Bakery
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Meat & Seafood
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Pantry Staples
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Beverages
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Snacks
+</label>
+</div>
+</div>
+</div>
+<!-- Price Range -->
+<div class="mb-6">
+<h4 class="font-medium mb-4">Price Range</h4>
+<input type="range" min="0" max="100" value="50" class="price-slider w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+<div class="flex justify-between mt-2">
+<span class="text-sm text-gray-600">$0</span>
+<span class="text-sm text-gray-600">$100</span>
+</div>
+<div class="flex items-center gap-2 mt-3">
+<input type="number" placeholder="Min" class="w-full p-2 text-sm border border-gray-300 rounded">
+<span class="text-gray-400">-</span>
+<input type="number" placeholder="Max" class="w-full p-2 text-sm border border-gray-300 rounded">
+</div>
+</div>
+<!-- Dietary Preferences -->
+<div class="mb-6">
+<h4 class="font-medium mb-4">Dietary Preferences</h4>
+<div class="space-y-3">
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Organic
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Vegetarian
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Vegan
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Gluten-Free
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Dairy-Free
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Non-GMO
+</label>
+</div>
+</div>
+</div>
+<!-- Brands -->
+<div class="mb-6">
+<h4 class="font-medium mb-4">Brands</h4>
+<div class="space-y-3">
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Nature's Best
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Organic Valley
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Fresh Farms
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Green Earth
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm">
+<input type="checkbox">
+<span class="checkmark"></span>
+Pure Harvest
+</label>
+</div>
+</div>
+<button class="text-primary text-sm font-medium mt-2">+ Show more</button>
+</div>
+<!-- Rating -->
+<div class="mb-6">
+<h4 class="font-medium mb-4">Rating</h4>
+<div class="space-y-3">
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm flex items-center">
+<input type="checkbox">
+<span class="checkmark"></span>
+<div class="flex items-center ml-2 text-yellow-400">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+</div>
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm flex items-center">
+<input type="checkbox">
+<span class="checkmark"></span>
+<div class="flex items-center ml-2 text-yellow-400">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-line"></i>
+<span class="text-gray-500 ml-1">& up</span>
+</div>
+</label>
+</div>
+<div class="flex items-center">
+<label class="custom-checkbox pl-7 text-sm flex items-center">
+<input type="checkbox">
+<span class="checkmark"></span>
+<div class="flex items-center ml-2 text-yellow-400">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-line"></i>
+<i class="ri-star-line"></i>
+<span class="text-gray-500 ml-1">& up</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+<!-- Availability -->
+<div class="mb-6">
+<h4 class="font-medium mb-4">Availability</h4>
+<div class="flex items-center justify-between">
+<span class="text-sm">In Stock Only</span>
+<label class="custom-switch">
+<input type="checkbox" checked>
+<span class="slider"></span>
+</label>
+</div>
+</div>
+<div class="pt-4 border-t border-gray-200">
+<button class="w-full py-3 bg-primary text-[#0A1D37] font-medium rounded !rounded-button whitespace-nowrap">Apply Filters</button>
+</div>
+</div>
+</div>
+<!-- Products Grid -->
+<div class="lg:w-3/4">
+<!-- Sort and View Options -->
+<div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+<div class="flex flex-wrap justify-between items-center gap-4">
+<div>
+<h2 class="text-xl font-bold">All Products</h2>
+<p class="text-gray-600 text-sm">Showing 1-12 of 156 products</p>
+</div>
+<div class="flex items-center gap-4">
+<!-- View Toggle -->
+<div class="hidden sm:flex items-center bg-gray-100 rounded-full p-1">
+<button id="gridViewBtn" class="view-toggle-btn active w-8 h-8 flex items-center justify-center rounded-full !rounded-button">
+<i class="ri-grid-fill"></i>
+</button>
+<button id="listViewBtn" class="view-toggle-btn w-8 h-8 flex items-center justify-center rounded-full !rounded-button">
+<i class="ri-list-check"></i>
+</button>
+</div>
+<!-- Sort Dropdown -->
+<div class="dropdown relative">
+<button class="flex items-center bg-white border border-gray-300 rounded px-4 py-2 text-sm">
+<span>Sort by: </span>
+<span class="font-medium ml-1">Popularity</span>
+<i class="ri-arrow-down-s-line ml-2"></i>
+</button>
+<div class="dropdown-content right-0 mt-1 w-48 py-2">
+<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Popularity</a>
+<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Price: Low to High</a>
+<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Price: High to Low</a>
+<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Newest First</a>
+<a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Rating</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Active Filters -->
+<div class="flex flex-wrap gap-2 mb-6">
+<div class="bg-gray-100 rounded-full px-3 py-1 text-sm flex items-center">
+<span>Organic</span>
+<button class="ml-2 w-4 h-4 flex items-center justify-center">
+<i class="ri-close-line"></i>
+</button>
+</div>
+<div class="bg-gray-100 rounded-full px-3 py-1 text-sm flex items-center">
+<span>Price: $10 - $50</span>
+<button class="ml-2 w-4 h-4 flex items-center justify-center">
+<i class="ri-close-line"></i>
+</button>
+</div>
+<div class="bg-gray-100 rounded-full px-3 py-1 text-sm flex items-center">
+<span>4★ & up</span>
+<button class="ml-2 w-4 h-4 flex items-center justify-center">
+<i class="ri-close-line"></i>
+</button>
+</div>
+</div>
+
+<!-- Products Grid -->
+<div id="productsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 grid-view">
+<!-- Product 1 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=fresh%252520organic%252520strawberries%252520in%252520eco-friendly%252520packaging%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=201&orientation=landscape" alt="Organic Strawberries" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-primary text-[#0A1D37] text-xs font-medium px-2 py-1 rounded">Organic</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-half-fill"></i>
+<span class="text-gray-500 ml-2">(42)</span>
+</div>
+<h3 class="font-medium mb-1">Organic Strawberries</h3>
+<p class="text-sm text-gray-500 mb-3">250g package</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Sweet and juicy organic strawberries, freshly picked at peak ripeness. Perfect for snacking, desserts, or adding to your morning smoothie.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$4.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 2 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=organic%252520avocados%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=202&orientation=landscape" alt="Organic Avocados" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-primary text-[#0A1D37] text-xs font-medium px-2 py-1 rounded">Organic</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-line"></i>
+<span class="text-gray-500 ml-2">(56)</span>
+</div>
+<h3 class="font-medium mb-1">Organic Avocados</h3>
+<p class="text-sm text-gray-500 mb-3">Pack of 4, ready to eat</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Creamy and nutritious organic avocados, perfectly ripened and ready to eat. Great for guacamole, toast, or adding to salads and sandwiches.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$6.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 3 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=artisan%252520sourdough%252520bread%252520loaf%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=203&orientation=landscape" alt="Artisan Sourdough Bread" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">Bestseller</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-line"></i>
+<span class="text-gray-500 ml-2">(86)</span>
+</div>
+<h3 class="font-medium mb-1">Artisan Sourdough Bread</h3>
+<p class="text-sm text-gray-500 mb-3">500g loaf, freshly baked</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Handcrafted sourdough bread with a crispy crust and soft, tangy interior. Made with a traditional 24-hour fermentation process for maximum flavor and digestibility.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$5.49</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 4 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=organic%252520milk%252520bottle%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=204&orientation=landscape" alt="Organic Milk" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-primary text-[#0A1D37] text-xs font-medium px-2 py-1 rounded">Organic</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-half-fill"></i>
+<span class="text-gray-500 ml-2">(74)</span>
+</div>
+<h3 class="font-medium mb-1">Organic Whole Milk</h3>
+<p class="text-sm text-gray-500 mb-3">1 gallon, grass-fed</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Creamy, nutrient-rich whole milk from grass-fed cows raised on certified organic pastures. No antibiotics, hormones, or pesticides. Pasteurized but not homogenized for a richer taste.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$5.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 5 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=fresh%252520organic%252520eggs%252520in%252520carton%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=205&orientation=landscape" alt="Organic Eggs" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-primary text-[#0A1D37] text-xs font-medium px-2 py-1 rounded">Organic</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<span class="text-gray-500 ml-2">(128)</span>
+</div>
+<h3 class="font-medium mb-1">Organic Free-Range Eggs</h3>
+<p class="text-sm text-gray-500 mb-3">Dozen, large</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Farm-fresh organic eggs from free-range hens raised on organic feed with access to outdoor pastures. These eggs have rich, golden yolks and exceptional flavor.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$6.49</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 6 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=fresh%252520salmon%252520fillet%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=206&orientation=landscape" alt="Wild Salmon" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">-15%</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-half-fill"></i>
+<span class="text-gray-500 ml-2">(92)</span>
+</div>
+<h3 class="font-medium mb-1">Wild-Caught Salmon</h3>
+<p class="text-sm text-gray-500 mb-3">8oz fillet, fresh</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Premium wild-caught salmon fillets with vibrant color and rich flavor. Sustainably harvested and flash-frozen to preserve freshness. High in omega-3 fatty acids and protein.</p>
+<div class="flex justify-between items-center mt-auto">
+<div>
+<span class="font-semibold">$12.74</span>
+<span class="text-sm text-gray-500 line-through ml-2">$14.99</span>
+</div>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 7 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=organic%252520spinach%252520in%252520packaging%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=207&orientation=landscape" alt="Organic Spinach" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-primary text-[#0A1D37] text-xs font-medium px-2 py-1 rounded">Organic</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-line"></i>
+<span class="text-gray-500 ml-2">(67)</span>
+</div>
+<h3 class="font-medium mb-1">Organic Baby Spinach</h3>
+<p class="text-sm text-gray-500 mb-3">5oz package, pre-washed</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Tender organic baby spinach leaves, triple-washed and ready to eat. Perfect for salads, smoothies, or quick sautéing. Packed with vitamins, minerals, and antioxidants.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$3.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 8 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=premium%252520cheese%252520assortment%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=208&orientation=landscape" alt="Cheese Assortment" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">Bestseller</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<span class="text-gray-500 ml-2">(143)</span>
+</div>
+<h3 class="font-medium mb-1">Artisan Cheese Selection</h3>
+<p class="text-sm text-gray-500 mb-3">8oz assortment, 4 varieties</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Curated selection of premium artisanal cheeses including aged cheddar, creamy brie, goat cheese, and blue cheese. Perfect for entertaining or creating an impressive cheese board.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$14.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 9 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=organic%252520honey%252520jar%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=209&orientation=landscape" alt="Organic Honey" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-primary text-[#0A1D37] text-xs font-medium px-2 py-1 rounded">Organic</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-half-fill"></i>
+<span class="text-gray-500 ml-2">(89)</span>
+</div>
+<h3 class="font-medium mb-1">Raw Organic Honey</h3>
+<p class="text-sm text-gray-500 mb-3">16oz jar, wildflower</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Pure, unfiltered wildflower honey from organic apiaries. This raw honey retains all natural enzymes and beneficial properties. Perfect for tea, baking, or as a natural sweetener.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$9.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 10 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=organic%252520blueberries%252520in%252520container%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=210&orientation=landscape" alt="Organic Blueberries" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-primary text-[#0A1D37] text-xs font-medium px-2 py-1 rounded">Organic</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<span class="text-gray-500 ml-2">(214)</span>
+</div>
+<h3 class="font-medium mb-1">Organic Blueberries</h3>
+<p class="text-sm text-gray-500 mb-3">6oz package</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Plump, sweet organic blueberries bursting with flavor and antioxidants. Carefully handpicked at peak ripeness. Perfect for snacking, baking, or adding to breakfast dishes.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$4.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 11 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=premium%252520coffee%252520beans%252520in%252520bag%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=211&orientation=landscape" alt="Premium Coffee" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">Bestseller</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<span class="text-gray-500 ml-2">(352)</span>
+</div>
+<h3 class="font-medium mb-1">Premium Coffee Beans</h3>
+<p class="text-sm text-gray-500 mb-3">12oz bag, dark roast</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Single-origin, shade-grown coffee beans from high-altitude farms. This dark roast has notes of chocolate, caramel, and a hint of spice with a smooth, low-acid finish.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$12.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Product 12 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm product-card">
+<div class="relative h-48 product-image">
+<img src="https://readdy.ai/api/search-image?query=organic%252520greek%252520yogurt%252520container%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=212&orientation=landscape" alt="Greek Yogurt" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-primary text-[#0A1D37] text-xs font-medium px-2 py-1 rounded">Organic</div>
+<button class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full">
+<i class="ri-heart-line text-gray-700"></i>
+</button>
+</div>
+<div class="p-4 product-details">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-half-fill"></i>
+<span class="text-gray-500 ml-2">(176)</span>
+</div>
+<h3 class="font-medium mb-1">Organic Greek Yogurt</h3>
+<p class="text-sm text-gray-500 mb-3">32oz container, plain</p>
+<p class="text-sm text-gray-600 mb-3 product-description">Thick, creamy organic Greek yogurt made from grass-fed cow's milk. Strained for extra protein and richness. Versatile for both sweet and savory recipes or enjoyed on its own.</p>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-semibold">$5.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Pagination -->
+<div class="flex justify-center mt-10">
+<nav class="flex items-center space-x-2">
+<a href="#" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300">
+<i class="ri-arrow-left-s-line"></i>
+</a>
+<a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-[#0A1D37] font-medium">1</a>
+<a href="#" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300">2</a>
+<a href="#" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300">3</a>
+<span class="w-10 h-10 flex items-center justify-center">...</span>
+<a href="#" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300">13</a>
+<a href="#" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300">
+<i class="ri-arrow-right-s-line"></i>
+</a>
+</nav>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Popular Categories -->
+<section class="py-12 px-6 md:px-12 bg-gray-50">
+<div class="container mx-auto">
+<h2 class="text-2xl font-bold mb-8">Popular Categories</h2>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+<!-- Category 1 -->
+<a href="#" class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow">
+<div class="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-3">
+<i class="ri-plant-line text-primary text-2xl"></i>
+</div>
+<h3 class="font-medium text-sm">Fresh Produce</h3>
+<p class="text-xs text-gray-500 mt-1">48 products</p>
+</a>
+<!-- Category 2 -->
+<a href="#" class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow">
+<div class="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-3">
+<i class="ri-cup-line text-primary text-2xl"></i>
+</div>
+<h3 class="font-medium text-sm">Dairy & Eggs</h3>
+<p class="text-xs text-gray-500 mt-1">32 products</p>
+</a>
+<!-- Category 3 -->
+<a href="#" class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow">
+<div class="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-3">
+<i class="ri-bread-line text-primary text-2xl"></i>
+</div>
+<h3 class="font-medium text-sm">Bakery</h3>
+<p class="text-xs text-gray-500 mt-1">24 products</p>
+</a>
+<!-- Category 4 -->
+<a href="#" class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow">
+<div class="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-3">
+<i class="ri-fish-line text-primary text-2xl"></i>
+</div>
+<h3 class="font-medium text-sm">Meat & Seafood</h3>
+<p class="text-xs text-gray-500 mt-1">36 products</p>
+</a>
+<!-- Category 5 -->
+<a href="#" class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow">
+<div class="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-3">
+<i class="ri-shopping-basket-line text-primary text-2xl"></i>
+</div>
+<h3 class="font-medium text-sm">Pantry Staples</h3>
+<p class="text-xs text-gray-500 mt-1">52 products</p>
+</a>
+<!-- Category 6 -->
+<a href="#" class="bg-white rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-shadow">
+<div class="w-16 h-16 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-3">
+<i class="ri-glass-line text-primary text-2xl"></i>
+</div>
+<h3 class="font-medium text-sm">Beverages</h3>
+<p class="text-xs text-gray-500 mt-1">29 products</p>
+</a>
+</div>
+</div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-12 px-6 md:px-12">
+<div class="container mx-auto">
+<div class="flex justify-between items-center mb-8">
+<h2 class="text-2xl font-bold">Featured Products</h2>
+<a href="#" class="text-primary font-medium flex items-center">
+View All
+<i class="ri-arrow-right-line ml-1"></i>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Featured 1 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm">
+<div class="relative h-48">
+<img src="https://readdy.ai/api/search-image?query=organic%252520almonds%252520in%252520package%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=213&orientation=landscape" alt="Organic Almonds" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-medium px-2 py-1 rounded">Featured</div>
+</div>
+<div class="p-4">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<span class="text-gray-500 ml-2">(208)</span>
+</div>
+<h3 class="font-medium mb-1">Organic Raw Almonds</h3>
+<p class="text-sm text-gray-500 mb-3">16oz bag, unsalted</p>
+<div class="flex justify-between items-center">
+<span class="font-semibold">$8.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Featured 2 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm">
+<div class="relative h-48">
+<img src="https://readdy.ai/api/search-image?query=premium%252520extra%252520virgin%252520olive%252520oil%252520bottle%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=214&orientation=landscape" alt="Olive Oil" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-medium px-2 py-1 rounded">Featured</div>
+</div>
+<div class="p-4">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-half-fill"></i>
+<span class="text-gray-500 ml-2">(156)</span>
+</div>
+<h3 class="font-medium mb-1">Extra Virgin Olive Oil</h3>
+<p class="text-sm text-gray-500 mb-3">500ml, cold-pressed</p>
+<div class="flex justify-between items-center">
+<span class="font-semibold">$15.99</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Featured 3 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm">
+<div class="relative h-48">
+<img src="https://readdy.ai/api/search-image?query=organic%252520quinoa%252520package%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=215&orientation=landscape" alt="Quinoa" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-medium px-2 py-1 rounded">Featured</div>
+</div>
+<div class="p-4">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-line"></i>
+<span class="text-gray-500 ml-2">(124)</span>
+</div>
+<h3 class="font-medium mb-1">Organic Quinoa</h3>
+<p class="text-sm text-gray-500 mb-3">24oz bag, tri-color</p>
+<div class="flex justify-between items-center">
+<span class="font-semibold">$7.49</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+<!-- Featured 4 -->
+<div class="card bg-white rounded-lg overflow-hidden shadow-sm">
+<div class="relative h-48">
+<img src="https://readdy.ai/api/search-image?query=dark%252520chocolate%252520bar%252520with%252520sea%252520salt%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=300&height=200&seq=216&orientation=landscape" alt="Dark Chocolate" class="w-full h-full object-cover object-top">
+<div class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-medium px-2 py-1 rounded">Featured</div>
+</div>
+<div class="p-4">
+<div class="flex items-center text-yellow-400 text-sm mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-half-fill"></i>
+<span class="text-gray-500 ml-2">(187)</span>
+</div>
+<h3 class="font-medium mb-1">Dark Chocolate Bar</h3>
+<p class="text-sm text-gray-500 mb-3">3.5oz, 72% cacao with sea salt</p>
+<div class="flex justify-between items-center">
+<span class="font-semibold">$4.29</span>
+<button class="bg-primary text-[#0A1D37] px-3 py-2 rounded-full text-sm font-medium !rounded-button whitespace-nowrap">Add to Cart</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Product Trends -->
+<section class="py-12 px-6 md:px-12 bg-gray-50">
+<div class="container mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Chart -->
+<div class="bg-white rounded-lg shadow-sm p-6">
+<h3 class="text-lg font-semibold mb-4">Product Trends</h3>
+<div id="trendsChart" style="width: 100%; height: 300px;"></div>
+</div>
+<!-- Most Viewed Products -->
+<div class="bg-white rounded-lg shadow-sm p-6">
+<h3 class="text-lg font-semibold mb-4">Most Viewed Products</h3>
+<div class="space-y-4">
+<!-- Most Viewed 1 -->
+<div class="flex items-center">
+<img src="https://readdy.ai/api/search-image?query=organic%252520blueberries%252520in%252520container%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=80&height=80&seq=217&orientation=squarish" alt="Organic Blueberries" class="w-16 h-16 object-cover rounded">
+<div class="ml-4 flex-1">
+<h4 class="font-medium">Organic Blueberries</h4>
+<div class="flex items-center text-yellow-400 text-xs">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<span class="text-gray-500 ml-1">(214)</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-semibold">$4.99</span>
+<button class="block text-primary text-sm mt-1">Add</button>
+</div>
+</div>
+<!-- Most Viewed 2 -->
+<div class="flex items-center">
+<img src="https://readdy.ai/api/search-image?query=premium%252520coffee%252520beans%252520in%252520bag%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=80&height=80&seq=218&orientation=squarish" alt="Premium Coffee" class="w-16 h-16 object-cover rounded">
+<div class="ml-4 flex-1">
+<h4 class="font-medium">Premium Coffee Beans</h4>
+<div class="flex items-center text-yellow-400 text-xs">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<span class="text-gray-500 ml-1">(352)</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-semibold">$12.99</span>
+<button class="block text-primary text-sm mt-1">Add</button>
+</div>
+</div>
+<!-- Most Viewed 3 -->
+<div class="flex items-center">
+<img src="https://readdy.ai/api/search-image?query=organic%252520avocados%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=80&height=80&seq=219&orientation=squarish" alt="Organic Avocados" class="w-16 h-16 object-cover rounded">
+<div class="ml-4 flex-1">
+<h4 class="font-medium">Organic Avocados</h4>
+<div class="flex items-center text-yellow-400 text-xs">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-line"></i>
+<span class="text-gray-500 ml-1">(56)</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-semibold">$6.99</span>
+<button class="block text-primary text-sm mt-1">Add</button>
+</div>
+</div>
+<!-- Most Viewed 4 -->
+<div class="flex items-center">
+<img src="https://readdy.ai/api/search-image?query=artisan%252520sourdough%252520bread%252520loaf%252520on%252520white%252520background%25252C%252520studio%252520lighting%25252C%252520high%252520quality%252520product%252520photography&width=80&height=80&seq=220&orientation=squarish" alt="Artisan Sourdough Bread" class="w-16 h-16 object-cover rounded">
+<div class="ml-4 flex-1">
+<h4 class="font-medium">Artisan Sourdough Bread</h4>
+<div class="flex items-center text-yellow-400 text-xs">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-line"></i>
+<span class="text-gray-500 ml-1">(86)</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-semibold">$5.49</span>
+<button class="block text-primary text-sm mt-1">Add</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Newsletter -->
+<section class="py-12 px-6 md:px-12">
+<div class="container mx-auto">
+<div class="bg-gradient-to-r from-primary/30 to-primary/10 rounded-lg p-8 md:p-12">
+<div class="max-w-3xl mx-auto text-center">
+<h2 class="text-2xl md:text-3xl font-bold mb-4">Stay Updated on New Products</h2>
+<p class="text-gray-700 mb-6">Subscribe to our newsletter to receive updates on new products, special offers, and seasonal recipes.</p>
+<div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+<input type="email" placeholder="Enter your email address" class="flex-1 px-4 py-3 rounded-full border-none shadow-sm">
+<button class="bg-primary text-[#0A1D37] px-6 py-3 rounded-full font-medium shadow-sm !rounded-button whitespace-nowrap">Subscribe</button>
+</div>
+<p class="text-xs text-gray-500 mt-4">By subscribing, you agree to receive marketing emails from us. You can unsubscribe at any time.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Delivery Information -->
+<section class="py-12 px-6 md:px-12 bg-gray-50">
+<div class="container mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Info 1 -->
+<div class="bg-white rounded-lg shadow-sm p-6 text-center">
+<div class="w-16 h-16 flex items-center justify-center bg-primary/20 rounded-full mx-auto mb-4">
+<i class="ri-truck-line text-primary text-2xl"></i>
+</div>
+<h3 class="font-semibold mb-2">Free Delivery</h3>
+<p class="text-gray-600 text-sm">Free delivery on all orders over $50. Same-day delivery available for orders placed before 2 PM.</p>
+</div>
+<!-- Info 2 -->
+<div class="bg-white rounded-lg shadow-sm p-6 text-center">
+<div class="w-16 h-16 flex items-center justify-center bg-primary/20 rounded-full mx-auto mb-4">
+<i class="ri-refresh-line text-primary text-2xl"></i>
+</div>
+<h3 class="font-semibold mb-2">Easy Returns</h3>
+<p class="text-gray-600 text-sm">Not satisfied with your purchase? Return it within 30 days for a full refund or exchange.</p>
+</div>
+<!-- Info 3 -->
+<div class="bg-white rounded-lg shadow-sm p-6 text-center">
+<div class="w-16 h-16 flex items-center justify-center bg-primary/20 rounded-full mx-auto mb-4">
+<i class="ri-secure-payment-line text-primary text-2xl"></i>
+</div>
+<h3 class="font-semibold mb-2">Secure Checkout</h3>
+<p class="text-gray-600 text-sm">Shop with confidence. Our payment system is encrypted and your data is always protected.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Column 1 -->
+            <div class="text-center sm:text-left">
+                <a href="./index.html" class="text-2xl font-pacifico text-primary mb-6 block">Fresh Basket</a>
+                <p class="text-gray-600 mb-6">Your one-stop shop for fresh groceries and quality products, delivered right to your doorstep.</p>
+                <div class="flex justify-center sm:justify-start space-x-4">
+                    <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                        <i class="ri-facebook-fill"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                        <i class="ri-twitter-x-fill"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                        <i class="ri-instagram-fill"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full hover:bg-primary hover:text-white transition-colors">
+                        <i class="ri-pinterest-fill"></i>
+                    </a>
+                </div>
+            </div>
+            <!-- Column 2 -->
+            <div class="text-center sm:text-left">
+                <h4 class="font-semibold text-lg mb-6">Shop</h4>
+                <ul class="space-y-3">
+                    <li><a href="./categories.html" class="text-gray-600 hover:text-primary transition-colors">Categories</a></li>
+                    <li><a href="./products.html" class="text-gray-600 hover:text-primary transition-colors">All Products</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">New Arrivals</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Best Sellers</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Special Offers</a></li>
+                </ul>
+            </div>
+            <!-- Column 3 -->
+            <div class="text-center sm:text-left">
+                <h4 class="font-semibold text-lg mb-6">Company</h4>
+                <ul class="space-y-3">
+                    <li><a href="./about.html" class="text-gray-600 hover:text-primary transition-colors">About Us</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Careers</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Blog</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Press</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Contact Us</a></li>
+                </ul>
+            </div>
+            <!-- Column 4 -->
+            <div class="text-center sm:text-left">
+                <h4 class="font-semibold text-lg mb-6">Help</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">FAQs</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Shipping</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Returns</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Track Order</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-primary transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- Bottom Footer -->
+        <div class="mt-12 pt-8 border-t border-gray-200">
+            <div class="flex justify-center">
+                <div class="text-center">
+                    <p class="text-gray-600 text-sm">© 2024 Fresh Basket. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Toast Notification -->
+<div class="fixed bottom-6 right-6 bg-primary text-[#0A1D37] px-4 py-3 rounded-lg shadow-lg z-50 toast" id="toast">
+<div class="flex items-center">
+<i class="ri-check-line mr-2"></i>
+<span id="toastMessage">Item added to cart!</span>
+</div>
+</div>
+
+<!-- Floating Help Button -->
+<div class="fixed bottom-6 left-6 z-40">
+<button class="bg-primary text-[#0A1D37] w-12 h-12 rounded-full shadow-lg flex items-center justify-center">
+<i class="ri-question-line text-xl"></i>
+</button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Cart sidebar toggle
+    const cartButton = document.getElementById('cartButton');
+    const closeCart = document.getElementById('closeCart');
+    const continueShopping = document.getElementById('continueShopping');
+    const cartSidebar = document.querySelector('.cart-sidebar');
+    const overlay = document.getElementById('overlay');
+
+    function openCart() {
+        cartSidebar.classList.add('open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCartSidebar() {
+        cartSidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    cartButton.addEventListener('click', openCart);
+    closeCart.addEventListener('click', closeCartSidebar);
+    continueShopping.addEventListener('click', closeCartSidebar);
+    overlay.addEventListener('click', closeCartSidebar);
+
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const closeMenu = document.getElementById('closeMenu');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    function openMobileMenu() {
+        mobileMenu.classList.remove('translate-x-full');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+        mobileMenu.classList.add('translate-x-full');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    menuToggle.addEventListener('click', openMobileMenu);
+    closeMenu.addEventListener('click', closeMobileMenu);
+    overlay.addEventListener('click', closeMobileMenu);
+
+    // Add to cart functionality
+    const addToCartButtons = document.querySelectorAll('button');
+    addToCartButtons.forEach(button => {
+        if (button.textContent.includes('Add to Cart')) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Show cart notification or open cart
+                openCart();
+            });
+        }
+    });
+
+    // Initialize Trends Chart
+    const trendsChart = echarts.init(document.getElementById('trendsChart'));
+    const trendsOption = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: {
+            data: ['Organic', 'Conventional', 'Total']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            axisLabel: {
+                color: '#666'
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: 'Sales (in $1000)',
+            nameTextStyle: {
+                color: '#666'
+            },
+            axisLabel: {
+                color: '#666'
+            }
+        },
+        series: [
+            {
+                name: 'Organic',
+                type: 'bar',
+                stack: 'total',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [12, 15, 18, 20, 22, 25, 28, 30, 32, 35, 38, 40],
+                itemStyle: {
+                    color: '#A8E6CF'
+                }
+            },
+            {
+                name: 'Conventional',
+                type: 'bar',
+                stack: 'total',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [8, 10, 12, 15, 18, 20, 22, 25, 28, 30, 32, 35],
+                itemStyle: {
+                    color: '#F8EFEA'
+                }
+            },
+            {
+                name: 'Total',
+                type: 'line',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75],
+                itemStyle: {
+                    color: '#0A1D37'
+                }
+            }
+        ]
+    };
+    trendsChart.setOption(trendsOption);
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        trendsChart.resize();
+    });
+});
+</script>
+</body>
+</html>

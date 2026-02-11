@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexGen Schema Studio</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-grid: #1e293b;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent-primary: #3b82f6;
+            /* Blue */
+            --accent-success: #10b981;
+            /* Green */
+            --accent-warning: #f59e0b;
+            /* Yellow */
+            --accent-danger: #ef4444;
+            /* Red */
+            --accent-purple: #8b5cf6;
+            /* Purple */
+            --grid-size: 40px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            user-select: none;
+        }
+
+        /* --- Background Grid Animation --- */
+        .grid-bg {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image:
+                linear-gradient(var(--bg-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+            background-size: var(--grid-size) var(--grid-size);
+            opacity: 0.2;
+            transform: perspective(500px) rotateX(60deg);
+            animation: gridMove 20s linear infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: perspective(500px) rotateX(60deg) translateY(0);
+            }
+
+            100% {
+                transform: perspective(500px) rotateX(60deg) translateY(var(--grid-size));
+            }
+        }
+
+        /* --- UI Controls --- */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn-control {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-control:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Legend --- */
+        .legend-card {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 16px;
+            width: 260px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .legend-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .dot.pk {
+            background: var(--accent-warning);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+        }
+
+        .dot.fk {
+            background: var(--accent-purple);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+        }
+
+        /* --- Canvas & Nodes --- */
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            cursor: grab;
+            overflow: visible;
+        }
+
+        #canvas-container:active {
+            cursor: grabbing;
+        }
+
+        .canvas-transform {
+            position: absolute;
+            transform-origin: 0 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* SVG Connections Layer */
+        svg#connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: visible;
+            z-index: 1;
+        }
+
+        .connection-path {
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        }
+
+        .connection-path.active {
+            opacity: 1;
+            stroke-width: 3;
+            filter: drop-shadow(0 0 8px currentColor);
+            stroke-dasharray: 10;
+            animation: flow 1s linear infinite;
+        }
+
+        /* Connector dots */
+        .conn-dot {
+            fill: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        body.focus-mode .conn-dot.active {
+            opacity: 1;
+            fill: #fff;
+        }
+
+        @keyframes flow {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+
+        /* Table Node */
+        .node {
+            position: absolute;
+            min-width: 280px;
+            width: max-content;
+            max-width: 500px;
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+            color: var(--text-primary);
+            z-index: 2;
+            transform-origin: center;
+        }
+
+        .node-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--glass-border);
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            cursor: move;
+        }
+
+        .node-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: currentColor;
+        }
+
+        .theme-green .node-header {
+            color: var(--accent-success);
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), transparent);
+        }
+
+        .theme-yellow .node-header {
+            color: var(--accent-warning);
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), transparent);
+        }
+
+        .theme-purple .node-header {
+            color: var(--accent-purple);
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), transparent);
+        }
+
+        .theme-red .node-header {
+            color: var(--accent-danger);
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.1), transparent);
+        }
+
+        .theme-blue .node-header {
+            color: var(--accent-primary);
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
+        }
+
+        .node-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        .node-body {
+            padding: 8px 0;
+        }
+
+        .field {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            gap: 15px;
+            transition: background 0.2s;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .field:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .field.target-field {
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .field-icon {
+            font-size: 0.75rem;
+            width: 18px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .field-name {
+            flex: 1;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .field-type {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .pk-badge {
+            color: var(--accent-warning);
+        }
+
+        .fk-badge {
+            color: var(--accent-purple);
+        }
+
+        /* Focus Mode */
+        body.focus-mode .node {
+            opacity: 0.15;
+            filter: grayscale(1);
+        }
+
+        body.focus-mode .node.focused {
+            opacity: 1;
+            filter: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            z-index: 10;
+        }
+
+        body.focus-mode .connection-path {
+            opacity: 0.05;
+        }
+
+        body.focus-mode .connection-path.active {
+            opacity: 1;
+            filter: none;
+            stroke-opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid-bg"></div>
+
+    <div class="legend-card">
+        <div class="legend-title">Schema Map</div>
+        <div class="legend-item">
+            <div class="dot pk"></div> Primary Key
+        </div>
+        <div class="legend-item">
+            <div class="dot fk"></div> Foreign Key
+        </div>
+        <div style="margin: 15px 0 10px 0; height: 1px; background: var(--glass-border);"></div>
+        <div class="legend-item" style="font-size:0.8rem; color:var(--accent-primary)">* Hover any table to trace
+            connections</div>
+    </div>
+
+    <div id="canvas-container">
+        <div class="canvas-transform" id="canvas-layer">
+            <svg id="connections"></svg>
+            <div id="nodes-layer"></div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="btn-control" onclick="resetView()">⟲</div>
+    </div>
+
+    <script>
+        // --- DATA WITH FIELD MAPPING ---
+        const schemaData = [
+            {
+                "id": "AuthUser",
+                "category": "yellow",
+                "x": 120,
+                "y": 40,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "username",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "email",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "first_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "last_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "is_staff",
+                        "t": "boolean"
+                    }
+                ]
+            },
+            {
+                "id": "Profile",
+                "category": "blue",
+                "x": 120,
+                "y": 380,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "user",
+                        "t": "OneToOneField -> auth_user",
+                        "fk": true
+                    },
+                    {
+                        "n": "projects_count",
+                        "t": "integer"
+                    },
+                    {
+                        "n": "user_type",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "display_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "role",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "phone_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "avatar",
+                        "t": "image"
+                    },
+                    {
+                        "n": "theme_preference",
+                        "t": "varchar"
+                    }
+                ]
+            },
+            {
+                "id": "Customer",
+                "category": "green",
+                "x": 420,
+                "y": 40,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "customer_user",
+                        "t": "OneToOneField -> auth_user",
+                        "fk": true
+                    },
+                    {
+                        "n": "customer_created_by",
+                        "t": "ForeignKey -> auth_user",
+                        "fk": true
+                    },
+                    {
+                        "n": "customer_code",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_primary_phone_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_secondary_phone_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_address",
+                        "t": "text"
+                    },
+                    {
+                        "n": "customer_company_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_email",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_update_frequency_preference",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_contact_preference",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_job_title",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_job_detail_notes",
+                        "t": "text"
+                    },
+                    {
+                        "n": "customer_payment_method_preference",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_bank_account_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_bank_account_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_bank_ifsc_code",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_online_upi_id",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_online_wallet_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_password_hash",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "customer_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "customer_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "ChannelPartner",
+                "category": "green",
+                "x": 420,
+                "y": 620,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "channel_partner_user",
+                        "t": "OneToOneField -> auth_user",
+                        "fk": true
+                    },
+                    {
+                        "n": "channel_partner_created_by",
+                        "t": "ForeignKey -> auth_user",
+                        "fk": true
+                    },
+                    {
+                        "n": "channel_partner_code",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "channel_partner_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "channel_partner_primary_phone_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "channel_partner_email",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "channel_partner_city",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "channel_partner_rera_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "channel_partner_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "channel_partner_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "Supervisor",
+                "category": "green",
+                "x": 420,
+                "y": 1200,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "supervisor_user",
+                        "t": "OneToOneField -> auth_user",
+                        "fk": true
+                    },
+                    {
+                        "n": "supervisor_created_by",
+                        "t": "ForeignKey -> auth_user",
+                        "fk": true
+                    },
+                    {
+                        "n": "supervisor_code",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "supervisor_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "supervisor_primary_phone_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "supervisor_secondary_phone_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "supervisor_address",
+                        "t": "text"
+                    },
+                    {
+                        "n": "supervisor_email",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "supervisor_password_hash",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "supervisor_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "supervisor_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "Vendor",
+                "category": "green",
+                "x": 420,
+                "y": 1760,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "vendor_code",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "vendor_company_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "vendor_first_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "vendor_last_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "vendor_primary_phone_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "vendor_secondary_phone_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "vendor_email",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "vendor_business_address",
+                        "t": "text"
+                    },
+                    {
+                        "n": "vendor_payment_method_preference",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "vendor_bank_account_number",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "vendor_online_payment_pin_hash",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "vendor_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "vendor_updated_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "vendor_created_by",
+                        "t": "ForeignKey -> auth_user",
+                        "fk": true
+                    }
+                ]
+            },
+            {
+                "id": "Project",
+                "category": "yellow",
+                "x": 930,
+                "y": 40,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "project_owner",
+                        "t": "ForeignKey -> auth_user",
+                        "fk": true
+                    },
+                    {
+                        "n": "project_assigned_supervisor",
+                        "t": "ForeignKey -> Supervisor",
+                        "fk": true
+                    },
+                    {
+                        "n": "project_assigned_customer",
+                        "t": "ForeignKey -> Customer",
+                        "fk": true
+                    },
+                    {
+                        "n": "project_code",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_land_area_square_feet",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "project_construction_type",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_flat_configuration",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_block_count",
+                        "t": "integer"
+                    },
+                    {
+                        "n": "project_land_address",
+                        "t": "text"
+                    },
+                    {
+                        "n": "project_budget",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "project_duration_months",
+                        "t": "integer"
+                    },
+                    {
+                        "n": "project_status",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_total_paid",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "project_remaining_amount",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "project_permission_status_map",
+                        "t": "json"
+                    },
+                    {
+                        "n": "project_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "project_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "ProjectPreset",
+                "category": "yellow",
+                "x": 930,
+                "y": 380,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "project_preset_project",
+                        "t": "OneToOneField -> Project",
+                        "fk": true
+                    },
+                    {
+                        "n": "project_preset_bhk_options",
+                        "t": "json"
+                    },
+                    {
+                        "n": "project_preset_facing_options",
+                        "t": "json"
+                    },
+                    {
+                        "n": "project_preset_area_options",
+                        "t": "json"
+                    },
+                    {
+                        "n": "project_preset_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "ProjectBlock",
+                "category": "yellow",
+                "x": 1280,
+                "y": 340,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "project_block_project",
+                        "t": "ForeignKey -> Project",
+                        "fk": true
+                    },
+                    {
+                        "n": "project_block_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_block_sequence",
+                        "t": "integer"
+                    },
+                    {
+                        "n": "project_block_floor_count",
+                        "t": "integer"
+                    },
+                    {
+                        "n": "project_block_units_per_floor",
+                        "t": "integer"
+                    },
+                    {
+                        "n": "project_block_notes",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_block_unit_layout_template",
+                        "t": "json"
+                    },
+                    {
+                        "n": "project_block_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "project_block_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "ProjectUnit",
+                "category": "yellow",
+                "x": 1280,
+                "y": 880,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "project_unit_block",
+                        "t": "ForeignKey -> ProjectBlock",
+                        "fk": true
+                    },
+                    {
+                        "n": "project_unit_floor_number",
+                        "t": "integer"
+                    },
+                    {
+                        "n": "project_unit_number",
+                        "t": "integer"
+                    },
+                    {
+                        "n": "project_unit_label",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_unit_bhk_configuration",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_unit_status",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_unit_crm_stage",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_unit_facing",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_unit_area_sqft",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "project_unit_price",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "project_unit_buyer_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_unit_buyer_email",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_unit_buyer_phone",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_unit_buyer_reference_source",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_unit_buyer_reference_contact",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_unit_buyer_customer",
+                        "t": "ForeignKey -> Customer",
+                        "fk": true
+                    },
+                    {
+                        "n": "project_unit_buyer_channel_partner",
+                        "t": "ForeignKey -> ChannelPartner",
+                        "fk": true
+                    },
+                    {
+                        "n": "project_unit_booking_date",
+                        "t": "date"
+                    },
+                    {
+                        "n": "project_unit_notes",
+                        "t": "text"
+                    },
+                    {
+                        "n": "project_unit_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "project_unit_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "LaborWorkType",
+                "category": "purple",
+                "x": 730,
+                "y": 1560,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "labor_work_type_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "labor_work_type_description",
+                        "t": "text"
+                    },
+                    {
+                        "n": "labor_work_type_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "labor_work_type_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "MaterialItem",
+                "category": "red",
+                "x": 730,
+                "y": 1880,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "material_item_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "material_item_display_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "material_item_is_active",
+                        "t": "boolean"
+                    },
+                    {
+                        "n": "material_item_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "material_item_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "ProjectPayment",
+                "category": "blue",
+                "x": 1620,
+                "y": 40,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "project_payment_project",
+                        "t": "ForeignKey -> Project",
+                        "fk": true
+                    },
+                    {
+                        "n": "project_payment_amount",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "project_payment_date",
+                        "t": "date"
+                    },
+                    {
+                        "n": "project_payment_type",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "project_payment_description",
+                        "t": "text"
+                    },
+                    {
+                        "n": "project_payment_document",
+                        "t": "file"
+                    },
+                    {
+                        "n": "project_payment_created_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "FlatPayment",
+                "category": "blue",
+                "x": 1620,
+                "y": 480,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "flat_payment_project",
+                        "t": "ForeignKey -> Project",
+                        "fk": true
+                    },
+                    {
+                        "n": "flat_payment_unit",
+                        "t": "ForeignKey -> ProjectUnit",
+                        "fk": true
+                    },
+                    {
+                        "n": "flat_payment_amount",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "flat_payment_stage",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "flat_payment_method",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "flat_payment_reference",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "flat_payment_remarks",
+                        "t": "text"
+                    },
+                    {
+                        "n": "flat_payment_date",
+                        "t": "date"
+                    },
+                    {
+                        "n": "flat_payment_receipt",
+                        "t": "file"
+                    },
+                    {
+                        "n": "flat_payment_created_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "PlotPayment",
+                "category": "blue",
+                "x": 1620,
+                "y": 860,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "plot_payment_project",
+                        "t": "ForeignKey -> Project",
+                        "fk": true
+                    },
+                    {
+                        "n": "plot_payment_unit",
+                        "t": "ForeignKey -> ProjectUnit",
+                        "fk": true
+                    },
+                    {
+                        "n": "plot_payment_amount",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "plot_payment_stage",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "plot_payment_method",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "plot_payment_reference",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "plot_payment_remarks",
+                        "t": "text"
+                    },
+                    {
+                        "n": "plot_payment_date",
+                        "t": "date"
+                    },
+                    {
+                        "n": "plot_payment_receipt",
+                        "t": "file"
+                    },
+                    {
+                        "n": "plot_payment_created_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "MaterialExpense",
+                "category": "blue",
+                "x": 1620,
+                "y": 1260,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "material_expense_project",
+                        "t": "ForeignKey -> Project",
+                        "fk": true
+                    },
+                    {
+                        "n": "material_expense_date",
+                        "t": "date"
+                    },
+                    {
+                        "n": "material_expense_item",
+                        "t": "ForeignKey -> MaterialItem",
+                        "fk": true
+                    },
+                    {
+                        "n": "material_expense_custom_item_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "material_expense_per_unit_cost",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "material_expense_quantity",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "material_expense_total_amount",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "material_expense_cgst",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "material_expense_sgst",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "material_expense_igst",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "material_expense_total_tax",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "material_expense_description",
+                        "t": "text"
+                    },
+                    {
+                        "n": "material_expense_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "material_expense_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "ManpowerExpense",
+                "category": "blue",
+                "x": 1620,
+                "y": 1560,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "manpower_expense_project",
+                        "t": "ForeignKey -> Project",
+                        "fk": true
+                    },
+                    {
+                        "n": "manpower_expense_work_type",
+                        "t": "ForeignKey -> LaborWorkType",
+                        "fk": true
+                    },
+                    {
+                        "n": "manpower_expense_date",
+                        "t": "date"
+                    },
+                    {
+                        "n": "manpower_expense_number_of_people",
+                        "t": "integer"
+                    },
+                    {
+                        "n": "manpower_expense_per_person_cost",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "manpower_expense_total_amount",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "manpower_expense_description",
+                        "t": "text"
+                    },
+                    {
+                        "n": "manpower_expense_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "manpower_expense_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "GeneralExpense",
+                "category": "blue",
+                "x": 1620,
+                "y": 1860,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "general_expense_project",
+                        "t": "ForeignKey -> Project",
+                        "fk": true
+                    },
+                    {
+                        "n": "general_expense_type",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "general_expense_date",
+                        "t": "date"
+                    },
+                    {
+                        "n": "general_expense_amount",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "general_expense_description",
+                        "t": "text"
+                    },
+                    {
+                        "n": "general_expense_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "general_expense_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "DepartmentalExpense",
+                "category": "blue",
+                "x": 1620,
+                "y": 2160,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "departmental_expense_project",
+                        "t": "ForeignKey -> Project",
+                        "fk": true
+                    },
+                    {
+                        "n": "departmental_expense_date",
+                        "t": "date"
+                    },
+                    {
+                        "n": "departmental_expense_amount",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "departmental_expense_description",
+                        "t": "text"
+                    },
+                    {
+                        "n": "departmental_expense_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "departmental_expense_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "AdministrationExpense",
+                "category": "blue",
+                "x": 1620,
+                "y": 2460,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "administration_expense_project",
+                        "t": "ForeignKey -> Project",
+                        "fk": true
+                    },
+                    {
+                        "n": "administration_expense_date",
+                        "t": "date"
+                    },
+                    {
+                        "n": "administration_expense_amount",
+                        "t": "decimal"
+                    },
+                    {
+                        "n": "administration_expense_description",
+                        "t": "text"
+                    },
+                    {
+                        "n": "administration_expense_created_at",
+                        "t": "datetime"
+                    },
+                    {
+                        "n": "administration_expense_updated_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "AttendanceBatch",
+                "category": "purple",
+                "x": 1960,
+                "y": 40,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "description",
+                        "t": "text"
+                    },
+                    {
+                        "n": "created_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "AttendanceMember",
+                "category": "purple",
+                "x": 1960,
+                "y": 500,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "batch",
+                        "t": "ForeignKey -> AttendanceBatch",
+                        "fk": true
+                    },
+                    {
+                        "n": "name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "role",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "is_active",
+                        "t": "boolean"
+                    },
+                    {
+                        "n": "created_at",
+                        "t": "datetime"
+                    }
+                ]
+            },
+            {
+                "id": "AttendanceRecord",
+                "category": "purple",
+                "x": 1960,
+                "y": 960,
+                "fields": [
+                    {
+                        "n": "id",
+                        "t": "AutoField",
+                        "pk": true
+                    },
+                    {
+                        "n": "attendance_code",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "attendee",
+                        "t": "ForeignKey -> auth_user",
+                        "fk": true
+                    },
+                    {
+                        "n": "member",
+                        "t": "ForeignKey -> AttendanceMember",
+                        "fk": true
+                    },
+                    {
+                        "n": "attendee_name",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "attendee_role",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "attendance_date",
+                        "t": "date"
+                    },
+                    {
+                        "n": "status",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "mode",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "check_in_time",
+                        "t": "time"
+                    },
+                    {
+                        "n": "check_out_time",
+                        "t": "time"
+                    },
+                    {
+                        "n": "work_notes",
+                        "t": "text"
+                    },
+                    {
+                        "n": "attendance_batch",
+                        "t": "varchar"
+                    },
+                    {
+                        "n": "created_at",
+                        "t": "datetime"
+                    }
+                ]
+            }
+        ];
+
+        // Specific Field Connections: [SourceTable, SourceField] -> [TargetTable, TargetField]
+        const connections = [
+            {
+                "from": "Profile",
+                "fF": "user",
+                "to": "AuthUser",
+                "tF": "id"
+            },
+            {
+                "from": "Customer",
+                "fF": "customer_user",
+                "to": "AuthUser",
+                "tF": "id"
+            },
+            {
+                "from": "Customer",
+                "fF": "customer_created_by",
+                "to": "AuthUser",
+                "tF": "id"
+            },
+            {
+                "from": "ChannelPartner",
+                "fF": "channel_partner_user",
+                "to": "AuthUser",
+                "tF": "id"
+            },
+            {
+                "from": "ChannelPartner",
+                "fF": "channel_partner_created_by",
+                "to": "AuthUser",
+                "tF": "id"
+            },
+            {
+                "from": "Supervisor",
+                "fF": "supervisor_user",
+                "to": "AuthUser",
+                "tF": "id"
+            },
+            {
+                "from": "Supervisor",
+                "fF": "supervisor_created_by",
+                "to": "AuthUser",
+                "tF": "id"
+            },
+            {
+                "from": "Vendor",
+                "fF": "vendor_created_by",
+                "to": "AuthUser",
+                "tF": "id"
+            },
+            {
+                "from": "Project",
+                "fF": "project_owner",
+                "to": "AuthUser",
+                "tF": "id"
+            },
+            {
+                "from": "Project",
+                "fF": "project_assigned_supervisor",
+                "to": "Supervisor",
+                "tF": "id"
+            },
+            {
+                "from": "Project",
+                "fF": "project_assigned_customer",
+                "to": "Customer",
+                "tF": "id"
+            },
+            {
+                "from": "ProjectPreset",
+                "fF": "project_preset_project",
+                "to": "Project",
+                "tF": "id"
+            },
+            {
+                "from": "ProjectBlock",
+                "fF": "project_block_project",
+                "to": "Project",
+                "tF": "id"
+            },
+            {
+                "from": "ProjectUnit",
+                "fF": "project_unit_block",
+                "to": "ProjectBlock",
+                "tF": "id"
+            },
+            {
+                "from": "ProjectUnit",
+                "fF": "project_unit_buyer_customer",
+                "to": "Customer",
+                "tF": "id"
+            },
+            {
+                "from": "ProjectUnit",
+                "fF": "project_unit_buyer_channel_partner",
+                "to": "ChannelPartner",
+                "tF": "id"
+            },
+            {
+                "from": "ProjectPayment",
+                "fF": "project_payment_project",
+                "to": "Project",
+                "tF": "id"
+            },
+            {
+                "from": "FlatPayment",
+                "fF": "flat_payment_project",
+                "to": "Project",
+                "tF": "id"
+            },
+            {
+                "from": "FlatPayment",
+                "fF": "flat_payment_unit",
+                "to": "ProjectUnit",
+                "tF": "id"
+            },
+            {
+                "from": "PlotPayment",
+                "fF": "plot_payment_project",
+                "to": "Project",
+                "tF": "id"
+            },
+            {
+                "from": "PlotPayment",
+                "fF": "plot_payment_unit",
+                "to": "ProjectUnit",
+                "tF": "id"
+            },
+            {
+                "from": "MaterialExpense",
+                "fF": "material_expense_project",
+                "to": "Project",
+                "tF": "id"
+            },
+            {
+                "from": "MaterialExpense",
+                "fF": "material_expense_item",
+                "to": "MaterialItem",
+                "tF": "id"
+            },
+            {
+                "from": "ManpowerExpense",
+                "fF": "manpower_expense_project",
+                "to": "Project",
+                "tF": "id"
+            },
+            {
+                "from": "ManpowerExpense",
+                "fF": "manpower_expense_work_type",
+                "to": "LaborWorkType",
+                "tF": "id"
+            },
+            {
+                "from": "GeneralExpense",
+                "fF": "general_expense_project",
+                "to": "Project",
+                "tF": "id"
+            },
+            {
+                "from": "DepartmentalExpense",
+                "fF": "departmental_expense_project",
+                "to": "Project",
+                "tF": "id"
+            },
+            {
+                "from": "AdministrationExpense",
+                "fF": "administration_expense_project",
+                "to": "Project",
+                "tF": "id"
+            },
+            {
+                "from": "AttendanceMember",
+                "fF": "batch",
+                "to": "AttendanceBatch",
+                "tF": "id"
+            },
+            {
+                "from": "AttendanceRecord",
+                "fF": "attendee",
+                "to": "AuthUser",
+                "tF": "id"
+            },
+            {
+                "from": "AttendanceRecord",
+                "fF": "member",
+                "to": "AttendanceMember",
+                "tF": "id"
+            }
+        ];
+
+        class SchemaRenderer {
+            constructor() {
+                this.scale = 0.8;
+                this.panX = 50;
+                this.panY = 50;
+                this.isDragging = false;
+                this.init();
+            }
+
+            init() {
+                this.nodesLayer = document.getElementById('nodes-layer');
+                this.svgLayer = document.getElementById('connections');
+                this.renderNodes();
+                // Wait for DOM layout
+                setTimeout(() => this.renderConnections(), 50);
+                this.attachEvents();
+                this.updateTransform();
+            }
+
+            renderNodes() {
+                schemaData.forEach(node => {
+                    const el = document.createElement('div');
+                    el.className = `node theme-${node.category}`;
+                    el.id = node.id;
+                    el.style.transform = `translate(${node.x}px, ${node.y}px)`;
+                    el.dataset.x = node.x; el.dataset.y = node.y;
+
+                    let fieldsHtml = node.fields.map(f => `
+                        <div class="field" id="${node.id}-${f.n}">
+                            <span class="field-icon ${f.pk ? 'pk-badge' : f.fk ? 'fk-badge' : ''}">${f.pk ? '🔑' : f.fk ? '🔗' : ''}</span>
+                            <span class="field-name">${f.n}</span>
+                            <span class="field-type">${f.t}</span>
+                        </div>
+                    `).join('');
+
+                    el.innerHTML = `<div class="node-header"><span class="node-title">${node.id}</span></div><div class="node-body">${fieldsHtml}</div>`;
+
+                    const header = el.querySelector('.node-header');
+                    header.addEventListener('mousedown', (e) => this.startDragNode(e, el));
+
+                    el.addEventListener('mouseenter', () => this.highlight(node.id));
+                    el.addEventListener('mouseleave', () => this.clearHighlight());
+
+                    this.nodesLayer.appendChild(el);
+                });
+            }
+
+            renderConnections() {
+                this.svgLayer.innerHTML = '<defs><marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/></marker></defs>';
+
+                connections.forEach(conn => {
+                    // Find DOM elements for fields
+                    const fromEl = document.getElementById(`${conn.from}-${conn.fF}`);
+                    const toEl = document.getElementById(`${conn.to}-${conn.tF}`);
+
+                    // Fallback to node center if field not found (robustness)
+                    if (!fromEl || !toEl) return;
+
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('class', 'connection-path');
+                    path.setAttribute('id', `c-${conn.from}-${conn.to}`);
+                    path.setAttribute('stroke', '#64748b');
+                    path.setAttribute('marker-end', 'url(#arrow)');
+
+                    // Add dots
+                    const dotStart = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    dotStart.setAttribute('r', '3');
+                    dotStart.setAttribute('class', 'conn-dot');
+                    dotStart.setAttribute('id', `d-${conn.from}-${conn.to}`);
+
+                    this.svgLayer.appendChild(path);
+                    this.svgLayer.appendChild(dotStart);
+
+                    this.updatePathInDom(path, dotStart, fromEl, toEl, conn.from, conn.to);
+                });
+            }
+
+            updatePathInDom(pathEl, dotEl, fromField, toField, fromNodeId, toNodeId) {
+                // Get Node positions
+                const fromNode = schemaData.find(n => n.id === fromNodeId);
+                const toNode = schemaData.find(n => n.id === toNodeId);
+
+                // Relative position of field within node
+                // We must use offsetTop but standard node width
+                const fromOffset = fromField.offsetTop + (fromField.offsetHeight / 2) + 40; // +40 header
+                const toOffset = toField.offsetTop + (toField.offsetHeight / 2) + 40;
+
+                const fromX = fromNode.x;
+                const fromY = fromNode.y + fromOffset;
+                const toX = toNode.x;
+                const toY = toNode.y + toOffset;
+
+                const nodeW = 300;
+
+                // Routing
+                const isForward = toX > (fromX + nodeW);
+                const isBackward = toX < fromX;
+
+                let startX, startY, endX, endY, cp1x, cp2x;
+                startY = fromY;
+                endY = toY;
+
+                if (isBackward) {
+                    startX = fromX; // Exit Left
+                    endX = toX + nodeW; // Enter Right
+                } else if (isForward) {
+                    startX = fromX + nodeW; // Exit Right
+                    endX = toX; // Enter Left
+                } else {
+                    startX = fromX + nodeW;
+                    endX = toX + nodeW;
+                }
+
+                const dist = Math.abs(endX - startX);
+                const curvature = Math.max(dist * 0.5, 80);
+
+                if (isBackward) {
+                    cp1x = startX - curvature; cp2x = endX + curvature;
+                } else if (isForward) {
+                    cp1x = startX + curvature; cp2x = endX - curvature;
+                } else {
+                    cp1x = startX + 80; cp2x = endX + 80;
+                }
+
+                const d = `M ${startX} ${startY} C ${cp1x} ${startY}, ${cp2x} ${endY}, ${endX} ${endY}`;
+                pathEl.setAttribute('d', d);
+
+                dotEl.setAttribute('cx', startX);
+                dotEl.setAttribute('cy', startY);
+            }
+
+            startDragNode(e, el) {
+                if (e.button !== 0) return;
+                e.stopPropagation();
+                this.dragNode = el;
+                this.dragRef = { x: e.clientX, y: e.clientY };
+                const style = window.getComputedStyle(el);
+                const mat = new WebKitCSSMatrix(style.transform);
+                this.nodePos = { x: mat.m41, y: mat.m42 };
+            }
+
+            handleMove(e) {
+                if (this.dragNode) {
+                    const dx = (e.clientX - this.dragRef.x) / this.scale;
+                    const dy = (e.clientY - this.dragRef.y) / this.scale;
+                    const newX = this.nodePos.x + dx;
+                    const newY = this.nodePos.y + dy;
+
+                    this.dragNode.style.transform = `translate(${newX}px, ${newY}px)`;
+                    // Update data
+                    const data = schemaData.find(n => n.id === this.dragNode.id);
+                    data.x = newX; data.y = newY;
+
+                    // Full Re-Render of connections to track fields
+                    this.renderConnections();
+                } else if (this.isDragging) {
+                    this.panX = e.clientX - this.startPan.x;
+                    this.panY = e.clientY - this.startPan.y;
+                    this.updateTransform();
+                }
+            }
+
+            highlight(id) {
+                document.body.classList.add('focus-mode');
+                document.getElementById(id).classList.add('focused');
+                connections.forEach(conn => {
+                    const lineId = `c-${conn.from}-${conn.to}`;
+                    const dId = `d-${conn.from}-${conn.to}`;
+
+                    if (conn.from === id) {
+                        // Outgoing
+                        document.getElementById(conn.to).classList.add('focused');
+                        document.getElementById(lineId).classList.add('active');
+                        document.getElementById(dId).classList.add('active');
+                        // Highlight target field
+                        document.getElementById(`${conn.to}-${conn.tF}`).classList.add('target-field');
+                    }
+                    if (conn.to === id) {
+                        // Incoming
+                        document.getElementById(conn.from).classList.add('focused');
+                        document.getElementById(lineId).classList.add('active');
+                        document.getElementById(dId).classList.add('active');
+                        // Highlight source field
+                        document.getElementById(`${conn.from}-${conn.fF}`).classList.add('target-field');
+                    }
+                });
+            }
+
+            clearHighlight() {
+                document.body.classList.remove('focus-mode');
+                document.querySelectorAll('.focused').forEach(e => e.classList.remove('focused'));
+                document.querySelectorAll('.active').forEach(e => e.classList.remove('active'));
+                document.querySelectorAll('.target-field').forEach(e => e.classList.remove('target-field'));
+            }
+
+            attachEvents() {
+                const c = document.getElementById('canvas-container');
+                c.addEventListener('mousedown', e => {
+                    if (e.button === 0) { this.isDragging = true; this.startPan = { x: e.clientX - this.panX, y: e.clientY - this.panY }; }
+                });
+                window.addEventListener('mousemove', e => this.handleMove(e));
+                window.addEventListener('mouseup', () => { this.isDragging = false; this.dragNode = null; });
+                c.addEventListener('wheel', e => {
+                    e.preventDefault();
+                    this.scale = Math.min(Math.max(0.3, this.scale - e.deltaY * 0.001), 2);
+                    this.updateTransform();
+                });
+            }
+
+            updateTransform() {
+                document.getElementById('canvas-layer').style.transform = `translate(${this.panX}px, ${this.panY}px) scale(${this.scale})`;
+            }
+        }
+
+        new SchemaRenderer();
+        function resetView() { location.reload(); }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,5 @@
+Insights Page Rules
+
+1. `Insights.jsx` renders graphs based on the `/insights` endpoint; rely on those arrays for sales velocity, conversion, and site progress instead of computing client-side.
+2. Format data according to the theme’s palette but do not mutate the underlying arrays—any change requires a new API call.
+3. If referencing projects, tag CRM-managed ones with the same messaging used on the Projects page so multi-unit records remain clearly sales-owned.

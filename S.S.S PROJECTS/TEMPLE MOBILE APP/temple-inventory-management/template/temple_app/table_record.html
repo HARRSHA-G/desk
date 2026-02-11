@@ -1,0 +1,147 @@
+{% include 'temple_app\nav_bar.html' %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Records</title>
+<style>
+    body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        background-color: #f2803e;
+       
+    }
+
+    main {
+        padding: 30px 20px;
+        display: flex;
+        justify-content: center;
+        background-color: #f2803e;
+    }
+
+
+  table {
+
+    padding: 20px;
+    font-size:small;
+    width:  35%;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 2px solid black;
+    padding:    6px;
+    font-size: 100%;
+    
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  td{
+    background-color: #0ad2fa;
+
+  }
+  .container{
+    margin: 20px auto;
+    display:table;
+    width: 70%;
+    height: auto;
+    text-align:center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Enhanced responsive design */
+  @media (max-width: 768px) {
+    table {
+      width: 90%;
+      font-size: x-small;
+    }
+    th, td {
+      padding: 5px;
+    }
+    .container {
+      width: 95%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    table {
+      width: 98%;
+      font-size: xx-small;
+    }
+    th, td {
+      padding: 3px;
+      border: 1px solid black;
+    }
+    .container {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .container {
+      width: 60%;
+    }
+    table {
+      width: 30%;
+    }
+  }
+</style>
+</head>
+<body>
+{% block content %}
+     
+
+    <div class="container">
+        {% if data_list %}
+        {% if from_date %}
+        <h3>From: {{from_date}} <br> To: {{to_date}} </h3>
+      {%endif%}    
+            <table>
+                <thead>
+                    <tr>
+                        
+                        {% for key in key_set %}
+                             <th>{{ key}}</th>
+                        {% endfor %}
+                    
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in data_list %}
+                        <tr>
+                            {% for value in data.values %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <br>
+            </table>
+          
+              
+          {% endif %}
+
+          {% if text %}
+
+            <h2>
+              {{text}}
+            </h2>
+          {% endif %}  
+          
+                  
+    
+
+
+    
+    </div>
+    
+{% endblock %}
+</body>
+</html>

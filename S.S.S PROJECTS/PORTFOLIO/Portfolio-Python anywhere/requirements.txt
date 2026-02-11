@@ -1,0 +1,12 @@
+Django
+python-decouple
+python-dotenv
+whitenoise
+requests
+urllib3
+pytz
+pillow
+# Database (if using postgres, otherwise sqlite is built-in)
+# psycopg2-binary
+# Web Server (if needed, though PA handles this usually)
+# gunicorn 

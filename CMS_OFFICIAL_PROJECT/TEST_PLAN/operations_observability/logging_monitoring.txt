@@ -1,0 +1,24 @@
+=========================
+LOGGING AND MONITORING
+=========================
+
+Goal
+----
+- Ensure key events and errors are captured, searchable, and alertable.
+
+Logging
+-------
+- Auth events, CRUD actions, validation failures, and unexpected exceptions; avoid sensitive data in logs.
+
+Monitoring
+----------
+- Track uptime, latency, error rates, DB health, and background job status.
+
+Tooling
+-------
+- Structured logs (JSON), central log aggregation, APM where available.
+
+Automation
+----------
+- CI checks for logger usage in critical paths; synthetic monitors for uptime and key flows.
+

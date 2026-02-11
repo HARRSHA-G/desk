@@ -1,0 +1,5 @@
+Dashboard Page Rules
+
+1. `Dashboard.jsx` aggregates stats from multiple APIs (projects, payments, cash flow). Each widget should rely on its bridge endpoint rather than recomputing totals client-side.
+2. Filters and sorts should re-trigger API calls instead of mutating backend data locally.
+3. Highlight CRM-managed projects consistently with the Projects page so multi-unit entries carry a “managed via CRM/Sales” cue.

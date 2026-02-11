@@ -1,0 +1,24 @@
+========================
+CAPACITY TESTING (LIMITS)
+========================
+
+Goal
+----
+- Map system limits for concurrent users, data volume, and request rates to inform scaling plans.
+
+Tooling
+-------
+- k6/locust/JMeter with gradually increasing load and dataset sizes.
+
+Metrics
+-------
+- Max sustainable throughput, latency at thresholds, DB index/query behavior with larger tables.
+
+Outcomes
+--------
+- Document capacity envelopes and needed infra/application optimizations.
+
+Cadence
+-------
+- Run after schema changes, major features, or infra upgrades.
+

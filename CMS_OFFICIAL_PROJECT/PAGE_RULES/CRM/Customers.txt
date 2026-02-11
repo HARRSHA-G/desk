@@ -1,0 +1,5 @@
+Customers Page Rules
+
+1. `Customers.jsx` shows CRM customer records and relies on the CRM API for contact, budget, and interest data; never duplicate this data outside the API.
+2. When linking customers to projects, respect the CRM flag that binds multi-flat/multi-plot projects to CRM ownership—do not assign single customer IDs locally.
+3. Searches/filters should hit the CRM endpoint rather than filtering cached arrays to stay current with CRM updates.

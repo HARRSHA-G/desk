@@ -1,0 +1,5 @@
+Track Finances Page Rules
+
+1. `TrackFinances.jsx` uses `/finance/track` to map income and expense per month; keep the chart data in sync with the endpoint instead of recalculating totals.
+2. Income/expense series should respect the backend’s Decimal precision, formatting only for display without reaggregating.
+3. Project health metrics reference `project_total_paid`/`project_remaining_amount` from the bridge; do not infer them from local payments.

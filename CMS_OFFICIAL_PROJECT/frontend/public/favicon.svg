@@ -1,0 +1,11 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Construct Flow">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#22b5bf"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="#0f0f10" stroke="#2dd4bf" stroke-width="2"/>
+  <path d="M18 40V24l14-8 14 8v16l-14 8-14-8z" fill="url(#g)" stroke="#0f0f10" stroke-width="2" />
+  <path d="M32 20v24M22 26l20 12" stroke="#0f0f10" stroke-width="3" stroke-linecap="round" />
+</svg>

@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Generator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script>
+        // Check if jQuery is loaded
+        if (typeof jQuery === 'undefined') {
+            console.error('jQuery is not loaded!');
+            alert('Error: jQuery is not loaded. Please check your internet connection and refresh the page.');
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2803e;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-container {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .hidden { display: none; }
+        label, input, select, button {
+            border-radius: 5px;
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 12px;
+            font-size: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+        }
+        button {
+            border-radius: 5px;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:active {
+            background: #3d8b40;
+        }
+        #generateReportBtn {
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+        #generateReportBtn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        #generateReportBtn:active {
+            background: #3d8b40;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2vw;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 1vw;
+            text-align: center;
+            font-size: clamp(12px, 1.5vw, 14px);
+        }
+        #previewContainer { 
+            max-height: 50vh; 
+            overflow-y: auto; 
+        }
+        #reportDate { 
+            width: 100%; 
+            max-width: 300px; 
+            padding: 1vw; 
+            margin-bottom: 1vw; 
+        }
+
+        .date-selector-wrapper {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+        
+        .date-selector {
+            display: flex; 
+            gap: 15px; 
+            align-items: center;
+        }
+        
+        .date-selector label {
+            margin: 0;
+            font-weight: bold;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        
+        .date-selector input,
+        .date-selector select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            margin: 0;
+            min-width: 120px;
+        }
+        
+        @media (max-width: 768px) {
+            .date-selector {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .date-selector label {
+                font-size: 14px;
+                margin-bottom: 5px;
+            }
+            
+            .date-selector input,
+            .date-selector select {
+                width: 100%;
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .date-selector {
+                gap: 12px;
+            }
+            
+            .date-selector label {
+                font-size: 13px;
+            }
+            
+            .date-selector input,
+            .date-selector select {
+                padding: 8px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        {% include 'temple_app/nav_bar.html' %}
+    </div>
+    {% block content %}
+    <div class="container">
+        {% csrf_token %}
+        <h2>Select Report Type</h2>
+        <div class="date-selector-wrapper">
+            <div class="date-selector">
+                <label for="reportDate">Select Date:</label>
+                <input type="date" id="reportDate" required max="">
+                
+                <label for="reportType">Report Type:</label>
+                <select id="reportType" onchange="loadForm()">
+                    <option value="ob">Opening Balance</option>
+                    <option value="gc">Ghee/Coconut</option>
+                    <option value="ml">Maaladharane</option>
+                    <option value="irumudi">Irumudi</option>
+                    <option value="material">Material</option>
+                    <option value="donation">Donation</option>
+                    <option value="upi">UPI</option>
+                    <option value="expense">Expense</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="ob_form" class="form-section">
+            <h3>Opening Balance</h3>
+            <label for="obAmount">Opening Balance Amount:</label>
+            <input type="number" id="obAmount" step="0.01" required>
+            <button>Add</button>
+        </div>
+
+        <div id="gc_form" class="form-section hidden">
+            <h3>Ghee/Coconut Report</h3>
+            <label for="startReceiptGC">Start Receipt Number:</label>
+            <input type="number" id="startReceiptGC">
+            <label for="endReceiptGC">End Receipt Number:</label>
+            <input type="number" id="endReceiptGC">
+            <button>Add</button>
+        </div>
+
+        <div id="ml_form" class="form-section hidden">
+            <h3>Maaladharane Report</h3>
+            <label for="startReceiptML">Start Receipt Number:</label>
+            <input type="number" id="startReceiptML">
+            <label for="endReceiptML">End Receipt Number:</label>
+            <input type="number" id="endReceiptML">
+            <button>Add</button>
+        </div>
+
+        <div id="irumudi_form" class="form-section hidden">
+            <h3>Irumudi Report</h3>
+            <label for="irumudiReceipt">Irumudi Receipt Number:</label>
+            <input type="text" id="irumudiReceipt">
+            <label for="irumudiAmount">Irumudi Amount:</label>
+            <input type="number" id="irumudiAmount">
+            <button>Add</button>
+        </div>
+
+        <div id="donation_form" class="form-section hidden">
+            <h3>Donation Report</h3>
+            <label for="donationReceipt">Donation Receipt Number:</label>
+            <input type="text" id="donationReceipt">
+            <label for="donationAmount">Donation Amount:</label>
+            <input type="number" id="donationAmount">
+            <button>Add</button>
+        </div>
+
+        <div id="material_form" class="form-section hidden">
+            <h3>Material Report</h3>
+            <label for="materialReceipt">Material Receipt Number:</label>
+            <input type="text" id="materialReceipt">
+            <label for="materialAmount">Material Amount:</label>
+            <input type="number" id="materialAmount">
+            <button>Add</button>
+        </div>
+
+        <div id="upi_form" class="form-section hidden">
+            <h3>UPI Report</h3>
+            <label for="upiAmount">UPI Amount:</label>
+            <input type="number" id="upiAmount">
+            <button>Add</button>
+        </div>
+
+        <div id="expense_form" class="form-section hidden">
+            <h3>Expense Report</h3>
+            <label for="expenseDetail">Expense Detail:</label>
+            <input type="text" id="expenseDetail">
+            <label for="expenseAmount">Expense Amount:</label>
+            <input type="number" id="expenseAmount">
+            <button>Add</button>
+        </div>
+
+        <div id="previewContainer">
+            <h3>Preview</h3>
+            <table id="obTable">
+                <thead>
+                    <tr><th>S.No</th><th>Opening Balance Amount</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="gcTable">
+                <thead>
+                    <tr><th>S.No</th><th>Ghee/Coconut Receipt Range</th><th>Receipts Count</th><th>Total Cost</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="mlTable">
+                <thead>
+                    <tr><th>S.No</th><th>Maladharane Receipt Range</th><th>Receipts Count</th><th>Total Cost</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="irumudiTable">
+                <thead>
+                    <tr><th>S.No</th><th>Irumudi Receipt Number</th><th>Amount</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="donationTable">
+                <thead>
+                    <tr><th>S.No</th><th>Donation Receipt Number</th><th>Amount</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="materialTable">
+                <thead>
+                    <tr><th>S.No</th><th>Materials Receipt Number</th><th>Amount</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="upiTable">
+                <thead>
+                    <tr><th>S.No</th><th>UPI Amount</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="expenseTable">
+                <thead>
+                    <tr><th>S.No</th><th>Expense Name</th><th>Expense Amount</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <br>
+        </div>
+        <button type="button" id="generateReportBtn" class="btn btn-primary">Generate Report</button>
+    </div>
+    {% endblock %}
+
+    <script>
+        // Wait for document to be fully loaded
+        window.addEventListener('load', function() {
+            console.log('Window loaded');
+            
+            // Get the button element
+            const generateBtn = document.getElementById('generateReportBtn');
+            console.log('Generate button found:', generateBtn);
+            
+            // Add click event listener
+            if (generateBtn) {
+                generateBtn.addEventListener('click', function(e) {
+                    console.log('Generate Report button clicked');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    try {
+                        downloadAndSave();
+                    } catch (error) {
+                        console.error('Error in button click handler:', error);
+                        alert('Error: ' + error.message);
+                    }
+                });
+            } else {
+                console.error('Generate Report button not found!');
+            }
+
+            // Bind all Add buttons
+            document.querySelectorAll('button:not(#generateReportBtn)').forEach(button => {
+                button.addEventListener('click', function() {
+                    const formSection = this.closest('.form-section');
+                    if (formSection) {
+                        const formId = formSection.id;
+                        console.log('Add button clicked for form:', formId);
+                        
+                        switch(formId) {
+                            case 'ob_form':
+                                addOpeningBalance();
+                                break;
+                            case 'gc_form':
+                                addReceiptGC();
+                                break;
+                            case 'ml_form':
+                                addReceiptML();
+                                break;
+                            case 'irumudi_form':
+                                addIrumudiReceipt();
+                                break;
+                            case 'donation_form':
+                                addDonation();
+                                break;
+                            case 'material_form':
+                                addMaterial();
+                                break;
+                            case 'upi_form':
+                                addUPI();
+                                break;
+                            case 'expense_form':
+                                addExpenseDetails();
+                                break;
+                        }
+                    }
+                });
+            });
+        });
+
+        function loadForm() {
+            const reportType = document.getElementById("reportType").value;
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(`${reportType}_form`).classList.remove('hidden');
+        }
+
+        function addOpeningBalance() {
+            let amount = document.getElementById("obAmount").value;
+            if (!amount) {
+                alert("Please enter an amount");
+                return;
+            }
+            let table = document.querySelector("#obTable tbody");
+            table.innerHTML = `<tr><td>1</td><td>Rs. ${amount}</td></tr>`;
+            document.getElementById("obAmount").value = "";
+        }
+
+        function addReceiptGC() {
+            let start = parseInt(document.getElementById("startReceiptGC").value);
+            let end = parseInt(document.getElementById("endReceiptGC").value);
+            let price = 130;
+            let count = (end - start) + 1;
+            let total = count * price;
+            let table = document.querySelector("#gcTable tbody");
+            let rowNumber = table.rows.length + 1;
+            table.innerHTML += `<tr><td>${rowNumber}</td><td>GC-${start} to GC-${end}</td><td>${count}</td><td>Rs. ${total}</td></tr>`;
+            document.getElementById("startReceiptGC").value = "";
+            document.getElementById("endReceiptGC").value = "";
+        }
+
+        function addReceiptML() {
+            let start = parseInt(document.getElementById("startReceiptML").value);
+            let end = parseInt(document.getElementById("endReceiptML").value);
+            let price = 15;
+            let count = (end - start) + 1;
+            let total = count * price;
+            let table = document.querySelector("#mlTable tbody");
+            let rowNumber = table.rows.length + 1;
+            table.innerHTML += `<tr><td>${rowNumber}</td><td>ML-${start} to ML-${end}</td><td>${count}</td><td>Rs. ${total}</td></tr>`;
+            document.getElementById("startReceiptML").value = "";
+            document.getElementById("endReceiptML").value = "";
+        }
+
+        function addIrumudiReceipt() {
+            let receipt = document.getElementById("irumudiReceipt").value;
+            let amount = document.getElementById("irumudiAmount").value;
+            let table = document.querySelector("#irumudiTable tbody");
+            table.innerHTML += `<tr><td>${table.rows.length + 1}</td><td>IR-${receipt}</td><td>Rs. ${amount}</td></tr>`;
+            document.getElementById("irumudiReceipt").value = "";
+            document.getElementById("irumudiAmount").value = "";
+        }
+
+        function addMaterial() {
+            let receipt = document.getElementById("materialReceipt").value;
+            let amount = document.getElementById("materialAmount").value;
+            let table = document.querySelector("#materialTable tbody");
+            table.innerHTML += `<tr><td>${table.rows.length + 1}</td><td>MT-${receipt}</td><td>Rs. ${amount}</td></tr>`;
+            document.getElementById("materialReceipt").value = "";
+            document.getElementById("materialAmount").value = "";
+        }
+
+        function addDonation() {
+            let receipt = document.getElementById("donationReceipt").value;
+            let amount = document.getElementById("donationAmount").value;
+            let table = document.querySelector("#donationTable tbody");
+            table.innerHTML += `<tr><td>${table.rows.length + 1}</td><td>DN-${receipt}</td><td>Rs. ${amount}</td></tr>`;
+            document.getElementById("donationReceipt").value = "";
+            document.getElementById("donationAmount").value = "";
+        }
+
+        function addUPI() {
+            let amount = document.getElementById("upiAmount").value;
+            let table = document.querySelector("#upiTable tbody");
+            table.innerHTML += `<tr><td>${table.rows.length + 1}</td><td>Rs. ${amount}</td></tr>`;
+            document.getElementById("upiAmount").value = "";
+        }
+
+        function addExpenseDetails() {
+            let receipt = document.getElementById("expenseDetail").value;
+            let amount = document.getElementById("expenseAmount").value;
+            let table = document.querySelector("#expenseTable tbody");
+            table.innerHTML += `<tr><td>${table.rows.length + 1}</td><td>EXPENSE-${receipt}</td><td>Rs. ${amount}</td></tr>`;
+            document.getElementById("expenseDetail").value = "";
+            document.getElementById("expenseAmount").value = "";
+        }
+
+        function downloadAndSave() {
+            console.log('downloadAndSave function called');
+            const selectedDate = document.getElementById("reportDate").value;
+            console.log('Selected date:', selectedDate);
+            
+            if (!selectedDate) {
+                alert("Please select a date.");
+                return;
+            }
+
+            // Validate date is not in future
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const selectedDateObj = new Date(selectedDate);
+            selectedDateObj.setHours(0, 0, 0, 0);
+
+            if (selectedDateObj > today) {
+                alert("Cannot select future dates. Please select today or a past date.");
+                return;
+            }
+
+            // Format date to dd-mm-yyyy for filename
+            const formattedDate = formatDateToDMY(selectedDate);
+            
+            // Check if any data exists
+            const hasData = $('#obTable tbody tr').length > 0 || 
+                           $('#gcTable tbody tr').length > 0 || 
+                           $('#mlTable tbody tr').length > 0 || 
+                           $('#irumudiTable tbody tr').length > 0 || 
+                           $('#donationTable tbody tr').length > 0 || 
+                           $('#materialTable tbody tr').length > 0 || 
+                           $('#upiTable tbody tr').length > 0 || 
+                           $('#expenseTable tbody tr').length > 0;
+            
+            console.log('Has data:', hasData);
+            
+            if (!hasData) {
+                alert("Please enter at least one record before generating the report.");
+                return;
+            }
+
+            // Calculate totals
+            let gcTotal = 0, mlTotal = 0, irumudiTotal = 0, donationTotal = 0, materialTotal = 0, upiTotal = 0, expenseTotal = 0;
+
+            // Collect GC data
+            let gcData = [];
+            $('#gcTable tbody tr').each(function() {
+                const cells = $(this).find('td');
+                const receiptRange = cells.eq(1).text();
+                const count = parseInt(cells.eq(2).text());
+                const total = parseFloat(cells.eq(3).text().replace('Rs. ', ''));
+                gcTotal += total;
+                const parts = receiptRange.split(' to ');
+                if (parts.length === 2) {
+                    gcData.push({
+                        receipt_range_start: parts[0].replace('GC-', ''),
+                        receipt_range_end: parts[1].replace('GC-', ''),
+                        receipts_count: count,
+                        total_cost: total
+                    });
+                }
+            });
+            console.log('GC Data:', gcData);
+
+            // Collect ML data
+            let mlData = [];
+            $('#mlTable tbody tr').each(function() {
+                const cells = $(this).find('td');
+                const receiptRange = cells.eq(1).text();
+                const count = parseInt(cells.eq(2).text());
+                const total = parseFloat(cells.eq(3).text().replace('Rs. ', ''));
+                mlTotal += total;
+                const parts = receiptRange.split(' to ');
+                if (parts.length === 2) {
+                    mlData.push({
+                        receipt_range_start: parts[0].replace('ML-', ''),
+                        receipt_range_end: parts[1].replace('ML-', ''),
+                        receipts_count: count,
+                        total_cost: total
+                    });
+                }
+            });
+            console.log('ML Data:', mlData);
+
+            // Collect Irumudi data
+            let irumudiData = [];
+            $('#irumudiTable tbody tr').each(function() {
+                const cells = $(this).find('td');
+                const receipt = cells.eq(1).text();
+                const amount = parseFloat(cells.eq(2).text().replace('Rs. ', ''));
+                irumudiTotal += amount;
+                irumudiData.push({
+                    receipt_number: receipt.replace('IR-', ''),
+                    amount: amount
+                });
+            });
+            console.log('Irumudi Data:', irumudiData);
+
+            // Collect Donation data
+            let donationData = [];
+            $('#donationTable tbody tr').each(function() {
+                const cells = $(this).find('td');
+                const receipt = cells.eq(1).text();
+                const amount = parseFloat(cells.eq(2).text().replace('Rs. ', ''));
+                donationTotal += amount;
+                donationData.push({
+                    receipt_number: receipt.replace('DN-', ''),
+                    amount: amount
+                });
+            });
+            console.log('Donation Data:', donationData);
+
+            // Collect Material data
+            let materialData = [];
+            $('#materialTable tbody tr').each(function() {
+                const cells = $(this).find('td');
+                const receipt = cells.eq(1).text();
+                const amount = parseFloat(cells.eq(2).text().replace('Rs. ', ''));
+                materialTotal += amount;
+                materialData.push({
+                    receipt_number: receipt.replace('MT-', ''),
+                    amount: amount
+                });
+            });
+            console.log('Material Data:', materialData);
+
+            // Collect UPI data
+            let upiData = [];
+            $('#upiTable tbody tr').each(function() {
+                const cells = $(this).find('td');
+                const amount = parseFloat(cells.eq(1).text().replace('Rs. ', ''));
+                upiTotal += amount;
+                upiData.push({
+                    amount: amount
+                });
+            });
+            console.log('UPI Data:', upiData);
+
+            // Collect Expense data
+            let expenseData = [];
+            $('#expenseTable tbody tr').each(function() {
+                const cells = $(this).find('td');
+                const detail = cells.eq(1).text();
+                const amount = parseFloat(cells.eq(2).text().replace('Rs. ', ''));
+                expenseTotal += amount;
+                expenseData.push({
+                    expense_name: detail.replace('EXPENSE-', ''),
+                    amount: amount
+                });
+            });
+            console.log('Expense Data:', expenseData);
+
+            // Get opening balance
+            let openingBalance = 0;
+            const obCell = $('#obTable tbody tr td:nth-child(2)').text();
+            if (obCell) {
+                openingBalance = parseFloat(obCell.replace('Rs. ', '')) || 0;
+            }
+            console.log('Opening Balance:', openingBalance);
+
+            // Calculate grand total using the formula: GC + ML + IR + DO + MT
+            const grandTotal = gcTotal + mlTotal + irumudiTotal + donationTotal + materialTotal;
+            
+            // Calculate cash total using the formula: Grand Total + OB - (UPI + Expense)
+            const cashTotal = grandTotal + openingBalance - (upiTotal + expenseTotal);
+
+            console.log('Totals:', {
+                grandTotal,
+                upiTotal,
+                expenseTotal,
+                openingBalance,
+                cashTotal
+            });
+
+            // Prepare data for backend
+            let reportData = {
+                date: selectedDate,
+                grand_total: grandTotal,
+                upi_total: upiTotal,
+                expense_total: expenseTotal,
+                opening_balance: openingBalance,
+                cash_total: cashTotal,
+                gc: gcData,
+                ml: mlData,
+                irumudi: irumudiData,
+                donation: donationData,
+                material: materialData,
+                upi: upiData,
+                expense: expenseData
+            };
+
+            console.log('Sending data to server:', reportData);
+
+            // Send data to server
+            $.ajax({
+                url: '/save_report/',
+                type: 'POST',
+                data: JSON.stringify(reportData),
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRFToken': $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    console.log('Server response:', response);
+                    if (response.status === 'success') {
+                        // Use locally calculated totals instead of backend response
+                        const totals = {
+                            openingBalance: openingBalance,
+                            cashTotal: cashTotal,
+                            upiTotal: upiTotal,
+                            expenseTotal: expenseTotal,
+                            grandTotal: grandTotal
+                        };
+
+                        console.log('Using calculated totals:', totals);
+
+                        // Generate PDF with calculated totals
+                        try {
+                        generatePDF(totals);
+                            // Clear tables and reset date only after successful PDF generation
+                        $('table tbody').empty();
+                        $('#reportDate').val('');
+                            alert('Report generated and saved successfully!');
+                        } catch (error) {
+                            console.error('Error generating PDF:', error);
+                            alert('Error generating PDF: ' + error.message);
+                        }
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error details:', {
+                        status: status,
+                        error: error,
+                        response: xhr.responseText
+                    });
+                    alert('Error saving report. Please check console for details.');
+                }
+            });
+        }
+
+        function generatePDF(totals) {
+            try {
+                const { jsPDF } = window.jspdf;
+                if (!jsPDF) {
+                    throw new Error("jsPDF library failed to load");
+                }
+
+                let doc = new jsPDF({
+                    orientation: "portrait",
+                    unit: "pt",
+                    format: "a4",
+                });
+
+                const selectedDate = document.getElementById("reportDate").value;
+                const formattedDate = formatDateToDMY(selectedDate);
+
+                // Define header function
+                const addHeader = () => {
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(14);
+                    doc.text("|| Om Sri Swami Sharanam Ayyappa ||", doc.internal.pageSize.getWidth() / 2, 40, { align: "center" });
+                    doc.text("Sri Kaliyuga Varada Ayyappaswamy Temple", doc.internal.pageSize.getWidth() / 2, 60, { align: "center" });
+                    doc.text("Ranganathapura, Prashanthanagar, 6th Main Road, Bangalore - 79", doc.internal.pageSize.getWidth() / 2, 80, { align: "center" });
+                    doc.text(`Report for Date: ${formattedDate}`, doc.internal.pageSize.getWidth() / 2, 100, { align: "center" });
+                    doc.line(30, 110, doc.internal.pageSize.getWidth() - 30, 110);
+                };
+
+                // Define footer function
+                const addFooter = (pageNumber) => {
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(10);
+                    doc.text(`Page ${pageNumber}`, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 30, { align: "center" });
+                };
+
+                let y = 130;
+                let pageNumber = 1;
+
+                const tables = [
+                    { tableId: "obTable", title: "Opening Balance Report" },
+                    { tableId: "gcTable", title: "Ghee/Coconut Report" },
+                    { tableId: "mlTable", title: "Maaladharane Report" },
+                    { tableId: "irumudiTable", title: "Irumudi Report" },
+                    { tableId: "donationTable", title: "Donation Report" },
+                    { tableId: "materialTable", title: "Material Report" },
+                    { tableId: "upiTable", title: "UPI Report" },
+                    { tableId: "expenseTable", title: "Expense Report" },
+                ];
+
+                addHeader();
+
+                tables.forEach(({ tableId, title }) => {
+                    const table = document.getElementById(tableId);
+                    if (table && table.querySelector('tbody').innerHTML.trim() !== "") {
+                        if (y + 100 > doc.internal.pageSize.getHeight() - 150) {
+                            addFooter(pageNumber);
+                            doc.addPage();
+                            pageNumber++;
+                            addHeader();
+                            y = 130;
+                        }
+
+                        doc.text(title, doc.internal.pageSize.getWidth() / 2, y, { align: "center" });
+                        y += 20;
+
+                        doc.autoTable({
+                            startY: y,
+                            html: `#${tableId}`,
+                            didDrawPage: (data) => {
+                                y = data.cursor.y;
+                                addFooter(pageNumber);
+                            },
+                            margin: { top: y, bottom: 60 },
+                            pageBreak: 'auto',
+                            styles: {
+                                fontSize: 10,
+                                cellPadding: 5,
+                            },
+                            headStyles: {
+                                fillColor: [66, 139, 202],
+                                textColor: 255,
+                                fontStyle: 'bold',
+                            },
+                            alternateRowStyles: {
+                                fillColor: [245, 245, 245],
+                            }
+                        });
+
+                        y = doc.lastAutoTable.finalY + 20;
+                    }
+                });
+
+                // Add summary totals to PDF
+                if (y + 150 > doc.internal.pageSize.getHeight()) {
+                    addFooter(pageNumber);
+                    doc.addPage();
+                    pageNumber++;
+                    addHeader();
+                    y = 130;
+                }
+
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("Summary", doc.internal.pageSize.getWidth() / 2, y, { align: "center" });
+                y += 20;
+
+                doc.setFont("helvetica", "normal");
+                doc.text(`Opening Balance: Rs. ${totals.openingBalance.toFixed(2)}`, 20, y + 10);
+                doc.text(`UPI Total: Rs. ${totals.upiTotal.toFixed(2)}`, 20, y + 30);
+                doc.text(`Expense Total: Rs. ${totals.expenseTotal.toFixed(2)}`, 20, y + 50);
+                doc.text(`Grand Total: Rs. ${totals.grandTotal.toFixed(2)}`, 20, y + 70);
+                doc.text(`Cash Total: Rs. ${totals.cashTotal.toFixed(2)}`, 20, y + 90);
+
+                // Add signature line
+                doc.text("Cashier Signature: ___________________", 20, y + 120);
+                doc.text("Date: ___________________", doc.internal.pageSize.getWidth() - 150, y + 120);
+
+                addFooter(pageNumber);
+                
+                // Save the PDF with formatted date in filename
+                const fileName = `Report_${formattedDate}.pdf`;
+                doc.save(fileName);
+                
+                return true;
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                throw error;
+            }
+        }
+
+        window.onload = function() {
+            // Set max date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('reportDate').max = today;
+        };
+
+        function formatDateToDMY(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        function fetchReport() {
+            const selectedDate = document.getElementById("reportDate").value;
+            if (!selectedDate) {
+                alert("Please select a date.");
+                return;
+            }
+
+            // Validate date is not in future
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const selectedDateObj = new Date(selectedDate);
+            selectedDateObj.setHours(0, 0, 0, 0);
+
+            if (selectedDateObj > today) {
+                alert("Cannot select future dates. Please select today or a past date.");
+                return;
+            }
+        }
+    </script>
+</body>
+</html>
+
+

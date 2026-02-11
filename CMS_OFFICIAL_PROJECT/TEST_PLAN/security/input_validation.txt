@@ -1,0 +1,24 @@
+=====================================
+INPUT VALIDATION & INJECTION SAFETY
+=====================================
+
+Goal
+----
+- Prevent SQLi, XSS, header injection, and payload abuse.
+
+Checks
+------
+- Server-side validation for all inputs; output encoding in templates; safe file handling if uploads exist.
+
+Tooling
+-------
+- pytest-django for negative payloads; ZAP/Burp for active scans; linters for template autoescape.
+
+Payloads
+--------
+- Overlong strings, special characters, HTML/JS injection attempts, and unexpected content types.
+
+Automation
+----------
+- Include fuzz/negative cases in CI; run periodic DAST on staging; keep test payload corpus versioned.
+

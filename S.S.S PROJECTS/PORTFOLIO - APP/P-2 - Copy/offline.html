@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline | Harsha Vardhan Gadde</title>
+    <style>
+        :root {
+            --cosmic-primary: #6366f1;
+            --cosmic-dark: #0f172a;
+            --cosmic-light: #f8fafc;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--cosmic-dark);
+            color: var(--cosmic-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--cosmic-primary);
+            font-weight: 700;
+        }
+        
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: #94a3b8;
+        }
+        
+        .offline-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            color: var(--cosmic-primary);
+            animation: pulse 2s infinite;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--cosmic-primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .btn:hover {
+            background: transparent;
+            border-color: var(--cosmic-primary);
+            color: var(--cosmic-primary);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+            
+            .offline-icon {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="offline-icon">
+            <i class="fas fa-wifi-slash"></i>
+        </div>
+        <h1>You're Offline</h1>
+        <p>It seems you're not connected to the internet. Please check your connection and try again. Some features may not be available while offline.</p>
+        <a href="/cosmic-portfolio.html" class="btn">
+            <i class="fas fa-sync-alt"></i> Try Again
+        </a>
+    </div>
+    
+    <script>
+        // Check if we're back online
+        function checkOnlineStatus() {
+            if (navigator.onLine) {
+                window.location.href = '/cosmic-portfolio.html';
+            }
+        }
+        
+        // Listen for online status
+        window.addEventListener('online', checkOnlineStatus);
+        
+        // Try to reload when the page regains focus
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                checkOnlineStatus();
+            }
+        });
+    </script>
+</body>
+</html>

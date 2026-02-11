@@ -1,0 +1,24 @@
+============================
+LOAD TESTING (SCENARIOS)
+============================
+
+Goal
+----
+- Validate performance under expected steady-state traffic (concurrent users/requests).
+
+Tooling
+-------
+- locust, k6, or JMeter; script critical user journeys (login, list, create/update FailureModes, load dashboard).
+
+Metrics
+-------
+- p50/p95/p99 latency, throughput, error rate, DB/CPU/memory utilization.
+
+Data
+----
+- Use realistic fixtures and pagination sizes; warm caches where applicable.
+
+Automation
+----------
+- Run in CI nightly or pre-release in a representative environment; fail on SLO violations.
+

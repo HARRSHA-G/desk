@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temple Reports</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2803e;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .nav-container {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2vw;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            padding: 2vw;
+            margin: 20px auto;
+            box-shadow: 0px 0px 16px rgba(0,0,0,0.12);
+            border-radius: 18px;
+            background: #fff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2vw;
+        }
+        /* Style only for the three specific links in container */
+        .container a {
+            display: inline-block;
+            width: 280px;
+            padding: 1.2vw 2vw;
+            font-size: clamp(14px, 2vw, 16px);
+            box-sizing: border-box;
+            background: linear-gradient(90deg, #4CAF50 60%, #388e3c 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+            border: none;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(76,175,80,0.08);
+            margin: 0;
+        }
+        .container a:hover {
+            background: linear-gradient(90deg, #388e3c 60%, #4CAF50 100%);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 16px rgba(76,175,80,0.18);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin: 0 0 1vw 0;
+            letter-spacing: 1px;
+            font-size: 2em;
+        }
+        @media (max-width: 700px) {
+            .container {
+                padding: 4vw 2vw;
+                gap: 3vw;
+            }
+            .container a {
+                width: 90%;
+                font-size: 15px;
+                padding: 3vw 2vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        {% include 'temple_app/nav_bar.html' %}
+    </div>
+    
+    <div class="main-content">
+        {% block content %}
+        <div class="container">
+            <h2>Welcome to Temple Reports</h2>
+            <a href="/generator/">Go to Report Generator</a>
+            <a href="/viewer/">Go to Report Viewer</a>
+            <a href="/report_by_date/">View Report By Date</a>
+        </div>
+        {% endblock %}
+    </div>
+</body>
+</html>
+
+
+

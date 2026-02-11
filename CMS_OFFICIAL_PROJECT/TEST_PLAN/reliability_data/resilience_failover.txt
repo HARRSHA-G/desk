@@ -1,0 +1,24 @@
+========================
+RESILIENCE & FAILOVER
+========================
+
+Scope
+-----
+- Behavior during dependency hiccups (DB slowness/outage), partial failures, and restarts.
+
+Checks
+------
+- Graceful error messaging, retries with backoff where appropriate, and no data corruption on partial writes.
+
+Recovery
+--------
+- Services restart cleanly; background jobs catch up; user sessions handle reconnect.
+
+Tooling
+-------
+- Fault injection (DB throttle), chaos testing in lower environments, and log review for error handling.
+
+Automation
+----------
+- Periodic drills simulating DB/network issues; capture MTTR and user-facing impact.
+

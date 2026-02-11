@@ -1,0 +1,10 @@
+{
+  "include": ["CMS_BACKEND/CMS"],
+  "extraPaths": [
+    "CMS_BACKEND/CMS",
+    "CMS_BACKEND/CMS/app_level",
+    "CMS_BACKEND/CMS/project_level"
+  ],
+  "reportMissingImports": false,
+  "reportMissingModuleSource": false
+}

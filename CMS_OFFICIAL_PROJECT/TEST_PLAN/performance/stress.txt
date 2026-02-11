@@ -1,0 +1,23 @@
+=================
+STRESS TESTING
+=================
+
+What to test
+------------
+- Push beyond expected load to find breaking points, queue buildup, and failure modes; observe recovery and error messaging.
+
+Recommended tools
+-----------------
+- k6/Locust with ramp stages; monitor DB connections, cache hit rate, worker queues.
+
+Automation approach
+-------------------
+- Scheduled in staging; document max sustainable RPS and graceful degradation behaviors.
+
+Critical edge cases
+-------------------
+- Burst logins and batch CRUD (projects/expenses/payments).
+- Download/upload spikes and third-party timeouts.
+- Offline retries piling up.
+- Large dark/light asset loads.
+

@@ -1,0 +1,5 @@
+Channel Partners Page Rules
+
+1. `ChannelPartners.jsx` lists CRM channel partners; it relies on the CRM API that returns partner names, contacts, and health metrics. Do not regenerate these metrics client-side.
+2. Any adds/edits should post via the authenticated CRM endpoint and expect backend validation of email/phone fields.
+3. Keep role-based filtering when showing partners tied to particular projects—reflect backend flags rather than local heuristics.

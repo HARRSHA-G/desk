@@ -1,0 +1,56 @@
+===========================================
+SMEAT TEST PLAN - TESTING METHODS
+===========================================
+
+Functional
+----------
+- Unit testing: Exercise model/business logic (calculations, save hooks) in isolation with mocks for external calls.
+- API/integration testing: Hit Django views/DRF endpoints to verify request/response shape, auth, permissions, and DB effects.
+- UI smoke/regression: Click critical paths (login, CRUD of FailureMode/Category/Fishbone) to catch broken flows after changes.
+- Validation and error handling: Verify required fields, limits, and friendly error messaging for forms and APIs.
+- User acceptance (UAT): Scenario-based checks against user stories to confirm behavior matches expectations.
+
+Performance (Non-Functional)
+----------------------------
+- Load testing: Steady, expected traffic to measure latency/throughput and 95th/99th percentile response times.
+- Stress testing: Push beyond expected load to find breaking points and observe graceful degradation/failure.
+- Soak/endurance testing: Sustained normal/peak load over hours to catch memory leaks or resource exhaustion.
+- Spike testing: Sudden traffic bursts (logins, batch imports) to confirm the system recovers and auto-scales appropriately.
+- Capacity testing: Vary concurrent users and data sizes to map limits and plan scaling.
+
+Security
+--------
+- Authentication/authorization: Verify only allowed roles can access protected views and data (admin vs user).
+- Input validation: Fuzz forms/APIs for injection (SQL, XSS), overlong payloads, and unsafe file inputs.
+- Session management: Check cookie flags (HttpOnly, Secure), CSRF protection, and logout/session expiry.
+- Dependency and config review: Scan libraries for CVEs; ensure secrets/keys aren't exposed in settings or logs.
+
+Quality and UX
+--------------
+- Accessibility: Keyboard navigation, focus order, color contrast, and basic screen reader labels (WCAG-oriented).
+- Usability: Clarity of labels, form guidance, error/success feedback, and sensible defaults.
+- Compatibility: Cross-browser/device/resolution checks (desktop/mobile/tablet) and major OS/browser combinations.
+- Responsive and theming: Layout adapts cleanly to all viewport sizes/orientations; verify dark/light mode styling and high-DPI displays.
+- Navigation and deep links: Direct URL access to pages works (no blank states), back/forward navigation preserves state, and route guards redirect appropriately.
+- Loading states: Skeletons/spinners/progress bars appear while data loads, disappear when ready, and reflect long-running operations (top-to-bottom content fill with no stuck loaders).
+- Online/offline handling: App detects offline state, shows helpful messaging, retries or queues actions, and recovers gracefully when connectivity returns.
+- Cross-platform readiness: Plan parity checks for mobile/desktop/tablet form factors (and future native/PWA builds) so flows, themes, and performance hold outside the web browser.
+
+Scenario Checks (Highlighted)
+-----------------------------
+- Loading experience: Top-to-bottom content fill, loaders clear when data arrives, and no frozen spinners on retries.
+- Connectivity shifts: Online/offline transitions handled gracefully with queuing/retry and user feedback.
+- Cross-device compatibility: Verify desktop/mobile/tablet across major browsers/OSes, including high-DPI and dark/light themes.
+- Future platform parity: Keep test cases reusable for potential PWA/native/mobile/desktop packaging so UX, performance, and styling remain consistent.
+
+Reliability and Data
+--------------------
+- Data integrity: Verify RPN calculations, timestamps, and FK/M2M relations persist correctly through CRUD.
+- Backup/restore and migrations: Test schema/data migrations on a copy; validate backup and restore flows.
+- Resilience: Simulate dependency failures (DB hiccups) and confirm graceful errors/logging without data loss.
+
+Operations and Observability
+----------------------------
+- Logging and monitoring: Ensure key events (auth, create/update/delete, errors) are logged and can be traced.
+- Deployment checks: Smoke tests after deploy; verify static files, env vars, and cron/worker tasks if present.
+

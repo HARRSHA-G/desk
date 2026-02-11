@@ -1,0 +1,24 @@
+==============================
+COMPATIBILITY & RESPONSIVENESS
+==============================
+
+Scope
+-----
+- Cross-browser/device/OS coverage (desktop/mobile/tablet), high-DPI, and light/dark themes.
+
+Tooling
+-------
+- Playwright/Cypress for viewport/browsers; BrowserStack/Sauce for wider OS coverage.
+
+Checks
+------
+- Layout integrity at breakpoints, touch/mouse parity, text scaling, and RTL readiness if needed.
+
+Theming
+-------
+- Verify both light/dark palettes and contrast; ensure assets/icons render correctly on high-DPI.
+
+Automation
+----------
+- Run scripted viewport sweeps in CI; maintain a matrix of priority browsers/devices.
+

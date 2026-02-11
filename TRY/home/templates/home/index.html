@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support India - Aatmanirbhar Bharat</title>
+    <style>
+        :root {
+            --saffron: #FF9933;
+            --white: #FFFFFF;
+            --green: #138808;
+            --navy: #000080;
+            --dark-saffron: #CC7A29;
+            --dark-green: #0F6B06;
+            --bg-color: #fcefe3; /* Very light saffron tint */
+            --text-color: #333;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--saffron) 0%, var(--dark-saffron) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .hero {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: white;
+            border-bottom: 5px solid var(--navy);
+        }
+
+        .hero h2 {
+            font-size: 2rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--navy);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,128,0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,128,0.4);
+            background-color: #0000a0;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            padding: 4rem 2rem;
+            background-color: #f9f9f9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            border-top: 5px solid var(--green);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h3 {
+            color: var(--dark-green);
+            margin-top: 0;
+        }
+
+        .pharmacy-section {
+            background: linear-gradient(135deg, var(--green) 0%, var(--dark-green) 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .pharmacy-section h2 {
+            font-size: 2.2rem;
+            color: white;
+        }
+
+        .footer {
+            background-color: #222;
+            color: #aaa;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .flag-strip {
+            height: 10px;
+            background: linear-gradient(to right, var(--saffron) 33%, white 33%, white 66%, var(--green) 66%);
+        }
+
+        /* Ashoka Chakra animation attempt mostly symbolic */
+        .chakra {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--navy);
+            border-radius: 50%;
+            margin: 0 auto 1rem auto;
+            position: relative;
+            animation: spin 10s linear infinite;
+        }
+        .chakra::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            width: 2px;
+            height: 100%;
+            background-color: var(--navy);
+            transform: translateX(-50%);
+        }
+        .chakra::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--navy);
+            transform: translateY(-50%);
+        }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="chakra"></div>
+        <h1>Make in India</h1>
+        <p>Empowering the Nation, Strengthening the Economy</p>
+    </header>
+
+    <div class="hero">
+        <h2>Be Vocal for Local</h2>
+        <p>In these challenging times, it is our duty to support our nation's economy. By choosing Indian-made products, we do not just buy a commodity; we invest in our country's future. Let us stand united and self-reliant.</p>
+        <a href="#" class="btn">Explore Indian Brands</a>
+    </div>
+
+    <div class="features">
+        <div class="card">
+            <h3>Economic Growth</h3>
+            <p>Every rupee spent on Indian products circulates within our economy, creating jobs and fostering innovation at home.</p>
+        </div>
+        <div class="card" style="border-top-color: var(--saffron);">
+            <h3>Self Reliance</h3>
+            <p>Aatmanirbhar Bharat is not just a slogan, but a vision. Reducing dependence on imports makes us stronger and more resilient.</p>
+        </div>
+        <div class="card" style="border-top-color: var(--navy);">
+            <h3>Global Quality</h3>
+            <p>Indian industries are now producing world-class goods. From textiles to technology, we are setting global standards.</p>
+        </div>
+    </div>
+
+    <div class="pharmacy-section">
+        <h2>Pharmacy of the World</h2>
+        <p>India is a global leader in pharmaceutical production. Support Indian drugs and healthcare products. We provide affordable and high-quality medicines to the world. Trust Indian Science, Trust Indian Medicine.</p>
+    </div>
+
+    <div class="flag-strip"></div>
+    <div class="footer">
+        <p>&copy; 2025 Indian Spirit Initiative. All Rights Reserved.</p>
+        <p>Designed with Pride 🇮🇳</p>
+    </div>
+
+</body>
+</html>

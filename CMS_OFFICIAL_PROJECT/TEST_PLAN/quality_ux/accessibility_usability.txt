@@ -1,0 +1,24 @@
+==============================
+ACCESSIBILITY & USABILITY
+==============================
+
+Scope
+-----
+- Keyboard navigation, focus order, color contrast, readable labels, and consistent feedback.
+
+Tooling
+-------
+- axe or pa11y for automated WCAG checks; manual keyboard-only runs; screen reader spot checks.
+
+Checks
+------
+- Focus states visible, tab order logical, form labels/aria attributes present, sufficient contrast in light/dark modes.
+
+Usability
+---------
+- Clear labels/tooltips, inline validation hints, success/error banners, and sensible defaults.
+
+Automation
+----------
+- Run axe in CI on key pages; keep a manual checklist for flows not covered by tooling.
+

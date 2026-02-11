@@ -1,0 +1,5 @@
+Directory Page Rules
+
+1. `Directory.jsx` manages contacts (customers, supervisors, vendors) via dedicated directory APIs; follow the backend’s required fields (name, phone, code).
+2. Avoid caching contact lists for too long—refresh from the server when reopening the page to keep CRM in sync.
+3. Respect CRM-managed flags: supervisors/customers tied to multi-unit projects should not be edited here unless the backend explicitly permits it.

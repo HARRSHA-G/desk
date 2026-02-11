@@ -1,0 +1,24 @@
+========================
+ALERTS AND SLOs
+========================
+
+SLO targets
+-----------
+- Define targets for availability, latency (p50/p95/p99), and error rate for key flows.
+
+Alerting
+--------
+- Trigger on SLO burn, elevated 5xx/4xx, auth failures, DB errors, and background job backlogs.
+
+Noise control
+-------------
+- Tune thresholds and groupings; ensure alerts are actionable with runbooks linked.
+
+Tooling
+-------
+- Monitoring/alerting stack (e.g., Prometheus/Grafana or vendor); synthetic checks for login and CRUD flows.
+
+Reviews
+-------
+- Regularly audit alert efficacy and update runbooks after incidents.
+

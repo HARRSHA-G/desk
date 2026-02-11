@@ -1,0 +1,5 @@
+Vendors Page Rules
+
+1. `Vendors.jsx` uses directory bridge endpoints for listing/adding vendors; include company name, contact phone, and vendor code in every payload.
+2. Treat vendor entries as immutable once created until the backend confirms changes—refresh the list from `/directory/vendors` to stay up to date.
+3. If vendors tie into expenses or procurement, keep the backend IDs/codes as the single source of truth, avoiding manual text duplication.

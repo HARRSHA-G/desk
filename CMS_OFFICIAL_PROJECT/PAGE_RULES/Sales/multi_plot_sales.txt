@@ -1,0 +1,7 @@
+Multi Plot Sales Page Rules
+
+1. Fetch `/projects/`, keep only `multi_plot` records, and force the user to select a project before sending a `/sales/multi-plot?project_id=...` request.
+2. Provide the same optional filters (project selector first, then block/tower selection if applicable) ahead of the “Load Sales” button so that sales data is only fetched when explicitly requested.
+3. Use the returned `plots` array to render availability; if empty or the API call fails, fall back to mock plot data while showing a notice that CRM/Sales owns the grid.
+4. Show contextual guidance explaining that multi-plot projects live in CRM/Sales, display the last-loaded project name, and keep the status chips/messaging consistent with the multi-flat page.
+5. Backend expectations: `project_id` parameter, `plots` response, and no reliance on local paid/due numbers—all financial tracking happens on the CRM/sales side.

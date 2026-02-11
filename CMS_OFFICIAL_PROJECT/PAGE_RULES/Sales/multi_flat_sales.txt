@@ -1,0 +1,7 @@
+Multi Flat Sales Page Rules
+
+1. The page must first load available projects from `/projects/`, filter for `multi_flat`, and only enable the grid/button after a project is chosen.
+2. Place optional tower/block selectors before the `Load Sales` button; selecting a block should pre-select/highlight that tower’s data without blocking the ability to view all towers.
+3. Clicking “Load Sales” calls `/sales/multi-flat` with `project_id`; if the response has towers, render them, otherwise fall back to the mock layout.
+4. Display helper text about CRM ownership, show the last-loaded project name, and disable the grid until the sales data has been explicitly loaded.
+5. Expect the backend to honor `project_id` filtering and provide `towers` arrays; treat the sales department as the source of truth for booking status, not the local UI.

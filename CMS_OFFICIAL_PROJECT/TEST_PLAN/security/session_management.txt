@@ -1,0 +1,24 @@
+=======================
+SESSION MANAGEMENT
+=======================
+
+Goal
+----
+- Secure handling of sessions/cookies and predictable auth lifecycle.
+
+Checks
+------
+- HttpOnly/Secure flags, SameSite settings, CSRF tokens on state-changing requests, logout/session expiry behavior.
+
+Tooling
+-------
+- pytest-django for CSRF/session tests; browser automation to inspect cookies and expiry flows.
+
+Edge cases
+----------
+- Multiple concurrent sessions, session fixation attempts, stale tabs after logout.
+
+Automation
+----------
+- Run in CI; ensure env mirrors production cookie/HTTPS expectations where possible.
+

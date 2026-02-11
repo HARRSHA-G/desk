@@ -1,0 +1,24 @@
+=====================
+SOAK / ENDURANCE
+=====================
+
+What to test
+------------
+- Sustained normal/peak traffic over hours to catch memory leaks, descriptor exhaustion, and clock drift.
+
+Recommended tools
+-----------------
+- k6 soak stages, Grafana/Prometheus for long-run metrics, browser performance sampling for UI memory.
+
+Automation approach
+-------------------
+- Nightly/weekly long-run in staging with production-like data; alert on slow creep in latency or resource usage.
+
+Critical edge cases
+-------------------
+- Session renewal and token refresh.
+- Background tasks (cleanup/cron).
+- Offline caching growth.
+- Logs rotation.
+- Dark/light theme switches over time.
+

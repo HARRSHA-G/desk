@@ -1,0 +1,28 @@
+================================
+VALIDATION & ERROR HANDLING
+================================
+
+Scope
+-----
+- Required fields, max lengths, formats, and business rules across forms/APIs (e.g., positive scores, valid categories).
+
+Tooling
+-------
+- pytest-django for server-side; Playwright/Cypress for UI validation messages.
+
+Negative cases
+--------------
+- Missing/invalid payloads, oversized inputs, duplicates, and forbidden transitions.
+
+Error responses
+---------------
+- Assert HTTP 4xx codes, structured error bodies, and human-readable messages in UI.
+
+Edge scenarios
+--------------
+- Deep-link to invalid IDs, concurrent edits, and partial saves; ensure rollback and clear feedback.
+
+Automation
+----------
+- Include negative tests in CI; avoid over-stubbing so real validation paths execute.
+

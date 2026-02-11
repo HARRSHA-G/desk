@@ -1,0 +1,5 @@
+CRM Overview Page Rules
+
+1. `CRMOverview.jsx` aggregates CRM metrics (leads, pipeline); all numbers must come from CRM bridge endpoints.
+2. Do not expose controls that conflict with Projects’ CRM-managed rules—multi-unit projects remain assigned in CRM, not the UI.
+3. Filters should re-fetch data via the CRM API and honor backend-provided status flags.

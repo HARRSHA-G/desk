@@ -1,0 +1,28 @@
+===================================
+UNIT TESTING (AUTOMATION-FIRST)
+===================================
+
+Scope
+-----
+- Model methods, signals/hooks, helpers, serializers/forms; mock out external calls and DB-heavy dependencies when possible.
+
+Tooling
+-------
+- pytest + pytest-django; use factories/fixtures for model instances; freezegun for time-based logic.
+
+Setup
+-----
+- Isolate tests with transactional DB; use in-memory or temp files; seed only what the test needs.
+
+Assertions
+----------
+- Cover calculations (e.g., RPN), side effects (designation defaults), and ordering meta; assert errors/messages for invalid inputs.
+
+Speed
+-----
+- Keep tests deterministic and fast; avoid hitting the network; prefer parametrized tests over many near-duplicates.
+
+CI
+--
+- Run on every push/PR; fail fast; collect coverage for core modules.
+

@@ -1,0 +1,24 @@
+=================================
+AUTHENTICATION & AUTHORIZATION
+=================================
+
+Goal
+----
+- Ensure only permitted users/roles access protected views and actions.
+
+Checks
+------
+- Admin vs user permissions, category scoping, forbidden paths, and elevation attempts.
+
+Tooling
+-------
+- pytest-django for permission logic; API tests for 401/403/404; UI E2E to verify redirects/guards.
+
+Edge cases
+----------
+- Expired/invalid tokens or sessions, disabled users, password reset flows if present.
+
+Automation
+----------
+- Run in CI; include negative tests; avoid real credentials; use fixtures/secrets from env.
+

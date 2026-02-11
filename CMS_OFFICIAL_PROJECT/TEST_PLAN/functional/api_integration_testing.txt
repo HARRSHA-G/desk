@@ -1,0 +1,28 @@
+==============================
+API / INTEGRATION TESTING
+==============================
+
+Scope
+-----
+- Django views/DRF endpoints, routing, auth/permissions, and DB effects.
+
+Tooling
+-------
+- pytest-django with APIClient/RequestFactory; httpx/requests for black-box checks; use factory data.
+
+Coverage
+--------
+- Status codes, payload shape, pagination, filtering, sorting, validation errors, and idempotency where applicable.
+
+Auth and permissions
+--------------------
+- Admin vs user access, forbidden paths, and category scoping; verify 401/403/404 as appropriate.
+
+Data integrity
+--------------
+- Assert rows created/updated/deleted as expected; verify RPN recalculation on saves.
+
+Automation
+----------
+- Run in CI with transactional DB and fixtures; avoid external network; record expected responses.
+

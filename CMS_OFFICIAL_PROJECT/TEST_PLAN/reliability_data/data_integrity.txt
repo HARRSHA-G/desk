@@ -1,0 +1,24 @@
+====================
+DATA INTEGRITY
+====================
+
+Scope
+-----
+- Correctness of RPN calculations, timestamps, FK/M2M relations, and ordering meta.
+
+Checks
+------
+- CRUD flows persist expected values; owner/category links remain consistent; default designation rules applied.
+
+Tooling
+-------
+- pytest-django with transactional DB; factory data; assert queries/counts; add constraints/index checks where possible.
+
+Edge cases
+----------
+- Concurrent updates, rollbacks on errors, and idempotent operations where applicable.
+
+Automation
+----------
+- Run in CI; capture regressions with fixtures representing real-world cases.
+

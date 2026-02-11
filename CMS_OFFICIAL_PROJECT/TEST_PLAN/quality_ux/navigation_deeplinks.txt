@@ -1,0 +1,24 @@
+=============================
+NAVIGATION & DEEP LINKS
+=============================
+
+Scope
+-----
+- Direct URL access, protected routes, and back/forward behavior.
+
+Checks
+------
+- Deep-link loads render data (no blank states), invalid IDs show friendly errors/redirects, auth guards route correctly.
+
+State
+-----
+- Back/forward preserves filters/sort where expected; modals/lazy tabs restore correctly.
+
+Tooling
+-------
+- Playwright/Cypress for scripted navigation paths; use seeded data for predictable IDs.
+
+Automation
+----------
+- Include deep-link coverage in regression suites; log any client/router errors.
+

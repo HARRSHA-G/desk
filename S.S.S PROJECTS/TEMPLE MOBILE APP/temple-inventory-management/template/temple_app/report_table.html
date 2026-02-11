@@ -1,0 +1,552 @@
+{% include 'temple_app\nav_bar.html' %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Records</title>
+<style>
+    body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        background-color: #f2803e;
+    }
+
+    main {
+        padding-top: 30px;
+        display: flex;
+        justify-content: center;
+        background-color: #f2803e;
+    }
+
+    .main_container {
+        display: flex; 
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .container {
+        width: 30%;
+        margin: 10px;
+    }
+    
+    .container_end {
+        display: flex;
+        flex-wrap: wrap;
+        width: 65%;
+        margin: 5px;
+        margin-right: 10px;
+    }
+  
+    .cont_end {
+        width: 30%;
+        margin: 10px;
+    }
+    
+    table {
+        padding: 20px;
+        border-collapse: collapse;
+        width: 100%;
+        font-size: small;
+        margin-bottom: 15px;
+    }
+    
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+    
+    th {
+        background-color: #10dfff;
+    }
+    
+    td {
+        background-color: #ffffff;    
+    }
+    
+    h2 {
+        text-align: center;
+    }
+    
+    .summary-section {
+        background-color: #10dfff;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 15px auto;
+        width: 90%;
+        max-width: 600px;
+        text-align: center;
+    }
+    
+    .summary-section p {
+        margin: 8px 0;
+        font-weight: bold;
+    }
+
+    /* Mobile responsive styles */
+    @media (max-width: 768px) {
+        .main_container {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container, .container_end, .cont_end {
+            width: 95%;
+            margin: 10px auto;
+        }
+        
+        table {
+            display: block;
+            width: 95%;
+            margin: 15px auto;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 6px;
+            font-size: 12px;
+        }
+        
+        h2 {
+            font-size: 18px;
+            margin: 15px 0;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .container, .container_end, .cont_end {
+            width: 98%;
+            margin: 8px auto;
+        }
+        
+        table {
+            width: 98%;
+            margin: 12px auto;
+            padding: 8px;
+        }
+        
+        th, td {
+            padding: 5px;
+            font-size: 11px;
+        }
+        
+        h2 {
+            font-size: 16px;
+            margin: 12px 0;
+        }
+        
+        .summary-section {
+            width: 95%;
+            padding: 12px;
+        }
+    }
+</style>
+</head>
+<body>
+{% block content %}
+    <br>
+    <h2>
+        From: {{from_date}}  To:{{to_date}}
+
+    </h2>
+    
+    {% if from_date and to_date %}
+    <div class="main_container">
+        <div class="container">   
+            <table >
+                    <thead>
+                        <tr>
+                            <th>{{col1.0}}</th>
+                            <th>{{col1.1}}</th>
+                            <th>{{col1.2}}</th>
+                            <th>{{col1.3}}</th>
+                            <th>{{col1.4}}</th>
+                        </tr>
+                
+                    
+                </thead>
+    
+                <tbody>
+                    <tr>
+                        {% if ir_data %}
+                            {%for ir in ir_data %}
+                                <td>
+                                    {{ir}}
+                                </td>
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+
+                    <tr>
+   
+                        {% if ml_data%}
+                        
+                            {%for ml in ml_data %}
+                            <td>
+                                {{ml}}
+                            </td>
+                            {% endfor %}
+                        {% endif %}
+    
+                    </tr>
+                    
+                    <tr>
+                        {% if gl_data%}
+                            {%for gl in gl_data %}
+                                <td>
+                                    {{gl}}
+                                </td>
+                            {% endfor %}
+                        {%  endif %}
+                    </tr>
+                    <tr>
+                        {% if id_data %}
+                            {%for il in id_data %}
+                                <td>
+                                    {{il}}
+                                </td>
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+    
+                    <tr>
+                        {% if donation_amt%}
+                            {% for d in donation_amt %}
+                                <td>
+                                    {{d}}
+                                </td>
+                            
+                            {%  endfor %}
+    
+                        {% endif %}
+                    </tr>
+                    {% if ir_data2  %}
+                    <tr>
+                        {%for ir in ir_data2 %}
+                        <td>
+                           {{ir}}
+                        </td>
+                        {% endfor %}
+                   
+                        {%endif%}
+
+                    </tr>
+                    <tr>
+                        <th>
+                            Grand Total: Rs.{{gt}}
+                        </th>
+                       <th>
+                        Cash: {{cash_gt_1}}
+                       </th>
+                       <th>
+                        UPI: {{upi_gt_1}}
+                       </th>
+                    </tr>
+                
+                    
+                  
+                </tbody>
+            </table>
+            <br>
+    </div>
+        
+        <div class="container">
+          
+            <table>
+                <thead>
+                    <th>
+                       <b>
+                        Irumudi Bookings
+    
+                       </b> 
+                    </th>
+                       
+                </thead>
+                <thead>
+                    <tr>
+                        <th> IR No</th>
+                        <th> Total Amount</th>
+                        <th>{{col1.3}}</th>
+                        <th>{{col1.4}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if irumudi_sold %}
+                    <tr>
+                        {% for rc,amt,csh,upi in irumudi_sold%}
+                        <tr>
+                            <td>
+                                {{rc}}
+
+                            </td>
+
+                            <td>
+                                {{amt}}
+                            </td>
+                            <td>
+                                {{csh}}
+
+                            </td>
+                            <td>
+                                {{upi}}
+                            </td>
+    
+                        </tr>
+            
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+                </table>    
+        </div>
+        <div class="container">
+            <table>
+                <thead>
+                    <thead>
+                        <th>
+                           <b>
+                            Materials
+                           </b> 
+                        </th>
+                           
+                    </thead>
+                    <tr>
+                        <th> IL No</th>
+                        <th> Total Amount</th>
+                        <th>{{col1.3}}</th>
+                        <th>{{col1.4}}</th>
+                    </tr>
+                    
+                    
+                </thead>
+                <tbody>
+                    <tr>
+                        {% if items_sold %}
+                        {% for rc,amt,csh,upi in items_sold%}
+                        <tr>
+                            <td>
+                                {{rc}}
+        
+                            </td>
+                            <td>
+                                {{amt}}
+                            </td>
+                            <td>{{csh}}</td>
+                            <td>{{upi}}</td>
+    
+                        </tr>
+                    
+                    {% endfor %}
+                    {% endif %}
+                    
+                </tbody>
+                </table>
+        </div>
+        
+        <div class="container">
+     
+            <table>
+                <thead>
+                    <th>
+                       <b>
+                       Donations
+                       </b> 
+                    </th>
+                       
+                </thead>
+                <thead>
+                    <tr>
+                        <th> DN No</th>
+                        <th> Total Amount</th>
+                        <th>Cash</th>
+                        <th>UPI</th>
+                    </tr>
+                    
+                    
+                </thead>
+                <tbody>
+                    {% if donation_values %}
+                    <tr>
+                        {% for rc,amt,csh,upi in donation_values %}
+                        <tr>
+                            <td>
+                                {{rc}}
+        
+                            </td>
+                            <td>
+                                {{amt}}
+                            </td>
+                            <td>
+                                {{csh}}
+                            </td>
+                            <td>
+                                {{upi}}
+                            </td>
+    
+                        </tr>
+            
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+                </table>
+        </div>
+       
+    </div>
+    
+    <div class="container_end" >
+        
+            <div class="container_end">
+                <table>
+                    <thead>
+                        <thead>
+                            <th>
+                               <b>
+                               Irumudi Balance Paid Rcpt
+        
+                               </b> 
+                            </th>
+                               
+                        </thead>
+                        
+                        <th>
+                            BRN-NO
+                        </th>
+                        <th>
+                            Balance Amt Paid
+                        </th>
+                        <th>
+                            Payment Mode
+                        </th>
+                       
+                        <tbody>
+                            {% if irumudi_sold2 %}
+                            <tr>
+                                {% for rc,amt,mode, bkd,bcd in irumudi_sold2%}
+                                <tr> 
+                                    {% if rc is not none %}
+                                        
+                                    
+                                    <td>
+                                       
+                                        {{rc}}
+                
+                                    </td>
+                                    <td>
+                                        {{amt}}
+                                    </td>
+                                    <td>
+                                        {{mode}}
+        
+                                    </td>
+                                    {% endif %}
+                                    
+            
+                                </tr>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                            </tr>
+                        </tbody>
+                    </thead>
+                </table>
+
+            </div>
+            
+            <br>
+            <br>
+       
+    </div>
+   <div class="cont_end">
+    
+    <table>
+        <thead>
+            <th>
+               <b>
+                Expenses
+
+               </b> 
+            </th>
+               
+        </thead>
+        <thead>
+            <tr>
+              <th>
+                Description
+              </th>
+              <th>
+                Total Expense
+              </th>
+              
+
+            </tr>
+
+        </thead>
+        <tbody>
+            <tr>
+                {% if exp_values %}
+                {% for k,v in exp_values%}
+
+                <tr>
+                    <td>
+                        {{k}}
+                    </td>
+                    <td>
+                        {{v}}
+                    </td>
+
+                </tr>
+                {%  endfor %}
+                {%  endif %}
+                
+                <tr>
+                    <th>
+                        Total Expense: Rs.{{grand_total}}
+                    </th>
+                </tr>
+
+            </tr>
+        </tbody>
+        
+
+    </table>
+   </div>
+
+
+</tr>
+
+    <div >
+
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Overall Grand Total: Rs.{{ogt}} <br> <br>
+                        
+                        Total Expense: Rs.{{grand_total}} <br> <br>
+
+                        UPI: {{upi_gt_1}}<br> <br>
+
+                        Net Balance: Rs.{{net_balance}}
+                    </th>
+                    
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    
+    {% endif %}
+
+    
+    
+{% endblock %}
+</body>
+</html>

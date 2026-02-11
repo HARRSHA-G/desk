@@ -1,0 +1,5 @@
+Expenses Page Rules
+
+1. `Expenses.jsx` uses backend aggregates (labor work types, material items, permissions) for charts; never hardcode expense categories—pull them from the API.
+2. Forms should validate amounts and attach project/unit IDs; once the backend confirms an expense, the UI treats it as immutable.
+3. Keep status flags aligned with backend approvals instead of deriving them locally, avoiding conflicts with CRM-managed multi-unit data.

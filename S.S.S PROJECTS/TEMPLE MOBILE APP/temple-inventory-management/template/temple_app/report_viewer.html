@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2803e;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .nav-container {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+            margin: 20px auto;
+            box-shadow: 0px 0px 10px gray;
+            border-radius: 10px;
+            background: #fff;
+            text-align: left;
+            box-sizing: border-box;
+        }
+        label, input, select, button {
+            border-radius: 5px;
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .hidden { display: none; }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+            th, td {
+                border-radius: 5px;
+                font-size: 12px;
+                padding: 8px;
+            }
+            label, input, select, button {
+                border-radius: 5px;
+                font-size: 14px;
+            }
+        }
+        @media (max-width: 480px) {
+            th, td {
+                border-radius: 5px;
+                font-size: 10px;
+                padding: 5px;
+            }
+            label, input, select, button {
+                border-radius: 5px;
+                font-size: 12px;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        {% include 'temple_app/nav_bar.html' %}
+    </div>
+    {% block content %}
+    <div class="container">
+        <h2>Report Viewer</h2>
+        <label for="viewType">Select View Type:</label>
+        <select id="viewType" onchange="loadView()">
+            <option value="date">View by Date Range</option>
+            <option value="month">View by Month</option>
+        </select>
+
+        <div id="dateView">
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 10px;">
+                <div style="flex: 1;">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" max="">
+                </div>
+                <div style="flex: 1;">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" max="">
+                </div>
+            </div>
+            <button onclick="fetchReportByDateRange()">Fetch Report</button>
+        </div>
+
+        <div id="monthView" class="hidden">
+            <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 10px;">
+                <div style="flex: 1;">
+                    <label for="month">Select Month:</label>
+                    <select id="month">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label for="year">Select Year:</label>
+                    <input type="number" id="year" min="2000" max="2100" value="2025">
+                </div>
+            </div>
+            <button onclick="fetchReportByMonth()">Fetch Monthly Report</button>
+        </div>
+
+        <div id="reportDisplay">
+            <h3>Report Details</h3>
+            <table id="reportTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Opening Balance</th>
+                        <th>UPI Total</th>
+                        <th>Expense Total</th>
+                        <th>Grand Total</th>
+                        <th>Cash Total</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="expenseTable" style="margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Expense Name</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <h4>Grand Total: <span id="grandTotal">0</span></h4>
+            <button onclick="printReport()" style="margin-top: 20px;">Download PDF</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        function loadView() {
+            const viewType = document.getElementById('viewType').value;
+            document.getElementById('dateView').classList.toggle('hidden', viewType !== 'date');
+            document.getElementById('monthView').classList.toggle('hidden', viewType !== 'month');
+        }
+
+        window.onload = function() {
+            // Set max date to today for all date inputs
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').max = today;
+            document.getElementById('endDate').max = today;
+            loadView();
+        };
+
+        function fetchReportByDateRange() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            if (!startDate || !endDate) {
+                alert('Please select both start and end dates.');
+                return;
+            }
+
+            // Validate dates are not in future
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const startDateObj = new Date(startDate);
+            const endDateObj = new Date(endDate);
+            startDateObj.setHours(0, 0, 0, 0);
+            endDateObj.setHours(0, 0, 0, 0);
+
+            if (startDateObj > today || endDateObj > today) {
+                alert("Cannot select future dates. Please select today or past dates.");
+                return;
+            }
+
+            if (startDateObj > endDateObj) {
+                alert('Start date cannot be greater than end date.');
+                return;
+            }
+
+            fetch(`/fetch_report_by_date/?date=${startDate}&date2=${endDate}`)
+                .then(response => {
+                    console.log('Raw response for date range:', response);
+                    if (!response.ok) {                        
+                        // Try reading response body for more details on non-OK status
+                        return response.text().then(text => {
+                            throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}. Body: ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Parsed data for date range:', data);
+                    if (data.status === 'success') {
+                        displayReport(data);
+                    } else {
+                        alert('Backend error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error for date range:', error);
+                    alert('Error fetching report: ' + error.message);
+                });
+        }
+
+        function fetchReportByMonth() {
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            if (!month || !year) {
+                alert('Please select a month and year.');
+                return;
+            }
+
+            const formattedMonth = month.padStart(2, '0');
+            fetch(`/fetch_report_by_month/?month=${formattedMonth}&year=${year}`)
+                .then(response => {
+                    console.log('Raw response for month:', response);
+                    if (!response.ok) {
+                         // Try reading response body for more details on non-OK status
+                        return response.text().then(text => {
+                            throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}. Body: ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                     console.log('Parsed data for month:', data);
+                     if (data.status === 'success') {
+                        displayReport(data);
+                    } else {
+                        alert('Backend error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error for month:', error);
+                    alert('Error fetching report: ' + error.message);
+                });
+        }
+
+        function displayReport(response) {
+             console.log('displayReport called with response:', response);
+            // Access the actual data object from the response
+            if (!response || !response.data) {
+                console.error('Invalid response structure:', response);
+                alert('Error displaying report: Invalid data received.');
+                return;
+            }
+             const data = response.data;
+
+            const tableBody = document.querySelector('#reportTable tbody');
+            const expenseTableBody = document.querySelector('#expenseTable tbody');
+            tableBody.innerHTML = '';
+            expenseTableBody.innerHTML = '';
+
+            // Calculate totals according to new formula
+            const upiTotalValue = parseFloat(data.upi_total) || 0;
+            const expenseTotalValue = parseFloat(data.expense_total) || 0;
+            const openingBalanceValue = parseFloat(data.opening_balance) || 0;
+            
+            // Calculate Grand Total = GC + ML + IR + DO + MT
+            let grandTotalValue = 0;
+            
+            // Add GC total
+            if (data.gc && data.gc.length > 0) {
+                data.gc.forEach(item => {
+                    grandTotalValue += parseFloat(item.total_cost) || 0;
+                });
+            }
+            
+            // Add ML total
+            if (data.ml && data.ml.length > 0) {
+                data.ml.forEach(item => {
+                    grandTotalValue += parseFloat(item.total_cost) || 0;
+                });
+            }
+            
+            // Add IR (Irumudi) total
+            if (data.irumudi && data.irumudi.length > 0) {
+                data.irumudi.forEach(item => {
+                    grandTotalValue += parseFloat(item.amount) || 0;
+                });
+            }
+            
+            // Add DO (Donation) total
+            if (data.donation && data.donation.length > 0) {
+                data.donation.forEach(item => {
+                    grandTotalValue += parseFloat(item.amount) || 0;
+                });
+            }
+            
+            // Add MT (Material) total
+            if (data.material && data.material.length > 0) {
+                data.material.forEach(item => {
+                    grandTotalValue += parseFloat(item.amount) || 0;
+                });
+            }
+            
+            // Calculate Cash Total = Grand Total + OB - (UPI + Expense)
+            const cashTotal = grandTotalValue + openingBalanceValue - (upiTotalValue + expenseTotalValue);
+
+            // Get the date or month/year for display
+            let reportDate = '';
+            const viewType = document.getElementById('viewType').value;
+            if (viewType === 'date') {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                reportDate = `${formatDateToDMY(startDate)} to ${formatDateToDMY(endDate)}`;
+            } else if (viewType === 'month') {
+                const month = document.getElementById('month').value;
+                const year = document.getElementById('year').value;
+                const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                reportDate = `${monthNames[parseInt(month) - 1]} ${year}`;
+            }
+
+            // Populate the main report table with a single summary row
+            tableBody.innerHTML += `
+                <tr>
+                    <td>${reportDate}</td>
+                    <td>Rs. ${openingBalanceValue.toFixed(2)}</td>
+                    <td>Rs. ${upiTotalValue.toFixed(2)}</td>
+                    <td>Rs. ${expenseTotalValue.toFixed(2)}</td>
+                    <td>Rs. ${grandTotalValue.toFixed(2)}</td>
+                    <td>Rs. ${cashTotal.toFixed(2)}</td>
+                </tr>
+            `;
+
+            // Populate the expense table
+            if (data.expense && data.expense.length > 0) {
+                data.expense.forEach(expense => {
+                    const formattedDate = formatDateToDMY(expense.date);
+                    expenseTableBody.innerHTML += `
+                        <tr>
+                            <td>${formattedDate}</td>
+                            <td>${expense.expense_name}</td>
+                            <td>Rs. ${parseFloat(expense.amount).toFixed(2)}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                expenseTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No expense data available</td></tr>';
+            }
+
+            // Update the Grand Total display element
+            document.getElementById('grandTotal').textContent = `Rs. ${grandTotalValue.toFixed(2)}`;
+
+            // Store totals in window for PDF generation
+            window.totalCash = cashTotal;
+            window.totalUPI = upiTotalValue;
+            window.totalExpense = expenseTotalValue;
+            window.grandTotal = grandTotalValue;
+            window.openingBalance = openingBalanceValue;
+        }
+
+        function formatDateToDMY(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        function printReport() {
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                alert("jsPDF library failed to load.");
+                return;
+            }
+
+            const doc = new jsPDF({
+                orientation: "portrait",
+                unit: "pt",
+                format: "a4",
+            });
+
+            const tableBody = document.querySelector('#reportTable tbody');
+            if (tableBody.innerHTML.trim() === "") {
+                alert("Please fetch a report first.");
+                return;
+            }
+
+            const viewType = document.getElementById('viewType').value;
+            let reportTitle = "";
+            let generationDate = "";
+            let fileName = "";
+            
+            if (viewType === "date") {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                const formattedStart = formatDateToDMY(startDate);
+                const formattedEnd = formatDateToDMY(endDate);
+                reportTitle = `Report from ${formattedStart} to ${formattedEnd}`;
+                generationDate = `${formattedStart} to ${formattedEnd}`;
+                fileName = `Report_${formattedStart}_to_${formattedEnd}.pdf`;
+            } else {
+                const month = document.getElementById('month').value;
+                const year = document.getElementById('year').value;
+                const monthNames = ["January", "February", "March", "April", "May", "June",
+                                  "July", "August", "September", "October", "November", "December"];
+                reportTitle = `Report for ${monthNames[month - 1]} ${year}`;
+                generationDate = `${monthNames[month - 1]} ${year}`;
+                fileName = `Report_${monthNames[month - 1]}_${year}.pdf`;
+            }
+
+            function addHeader(doc) {
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(14);
+                doc.text("|| Om Sri Swami Sharanam Ayyappa ||", doc.internal.pageSize.getWidth() / 2, 40, { align: "center" });
+                doc.text("Sri Kaliyuga Varada Ayyappaswamy Temple", doc.internal.pageSize.getWidth() / 2, 60, { align: "center" });
+                doc.text("Ranganathapura, Prashanthanagar, 6th Main Road, Bangalore - 79", doc.internal.pageSize.getWidth() / 2, 80, { align: "center" });
+                doc.line(30, 90, doc.internal.pageSize.getWidth() - 30, 90);
+                doc.setFontSize(14);
+                doc.text(reportTitle, doc.internal.pageSize.getWidth() / 2, 110, { align: "center" });
+            }
+
+            addHeader(doc);
+
+            doc.autoTable({
+                html: '#reportTable',
+                startY: 130,
+                theme: 'grid',
+                headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+                bodyStyles: { textColor: 0 },
+                margin: { top: 120, bottom: 100, left: 30, right: 30 },
+                pageBreak: 'auto',
+                didDrawPage: function (data) {
+                    addHeader(doc);
+                    const pageCount = doc.internal.getNumberOfPages();
+                    doc.setFontSize(10);
+                    doc.text(`Page ${data.pageNumber}`, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 30, { align: "center" });
+                }
+            });
+
+            let y = doc.lastAutoTable.finalY + 20;
+            if (document.querySelector('#expenseTable tbody').innerHTML.trim() !== "") {
+                doc.text("Expenses", doc.internal.pageSize.getWidth() / 2, y, { align: "center" });
+                y += 20;
+                doc.autoTable({
+                    html: '#expenseTable',
+                    startY: y,
+                    theme: 'grid',
+                    headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+                    bodyStyles: { textColor: 0 },
+                    margin: { top: 120, bottom: 100, left: 30, right: 30 },
+                    pageBreak: 'auto',
+                    didDrawPage: function (data) {
+                        addHeader(doc);
+                        const pageCount = doc.internal.getNumberOfPages();
+                        doc.setFontSize(10);
+                        doc.text(`Page ${data.pageNumber}`, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() - 30, { align: "center" });
+                    }
+                });
+                y = doc.lastAutoTable.finalY + 20;
+            }
+
+            // Use totals calculated by displayReport
+            const totalCash = window.totalCash || 0;
+            const totalUPI = window.totalUPI || 0;
+            const totalExpense = window.totalExpense || 0;
+            const grandTotal = window.grandTotal || 0;
+
+            const pageHeight = doc.internal.pageSize.getHeight();
+            if (y + 120 > pageHeight - 100) {
+                doc.addPage();
+                addHeader(doc);
+                y = 130;
+            }
+
+            doc.setFontSize(12);
+            doc.text(`Opening Balance: Rs. ${window.openingBalance.toFixed(2)}`, 30, y + 20);
+            doc.text(`Total UPI: Rs. ${window.totalUPI.toFixed(2)}`, 30, y + 40);
+            doc.text(`Total Expenses: Rs. ${window.totalExpense.toFixed(2)}`, 30, y + 60);
+            doc.text(`Cash Total: Rs. ${window.totalCash.toFixed(2)}`, 30, y + 80);
+            doc.text(`Grand Total: Rs. ${window.grandTotal.toFixed(2)}`, 30, y + 100);
+            doc.text("Cashier Signature: ___________________", 50, y + 140);
+
+            doc.save(fileName);
+        }
+    </script>
+    {% endblock %}
+</body>
+</html>
+

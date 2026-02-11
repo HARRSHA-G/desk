@@ -1,0 +1,24 @@
+=====================
+DEPLOYMENT CHECKS
+=====================
+
+Goal
+----
+- Verify releases are healthy post-deploy.
+
+Steps
+-----
+- Run DB migrations, collectstatic if needed, restart services/workers, and run smoke tests on key endpoints/UI flows.
+
+Validation
+----------
+- Check env vars, ALLOWED_HOSTS/CORS, static assets load, and admin login works.
+
+Rollback readiness
+------------------
+- Keep rollback steps documented and artifacts available; verify data migrations are reversible when possible.
+
+Automation
+----------
+- Use CI/CD pipelines with post-deploy smoke tests and health checks.
+
